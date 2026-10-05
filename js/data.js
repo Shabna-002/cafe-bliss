@@ -523,59 +523,59 @@ const CAFE_DATA = {
   specialOffers: [
     {
       id: "off1",
-      badge: "Combo Deal",
-      title: "Morning Fuel Combo",
-      subtitle: "Artisan Coffee + Warm Pastry or Avocado Toast",
+      badge: "Artisan Pairing",
+      title: "Sunrise Masterclass Pairing",
+      subtitle: "Single-Origin Brew + Handcrafted Viennoiserie",
       code: "MORNINGFUEL",
       discountText: "Save 30%",
       regularPrice: "$14.45",
       offerPrice: "$9.99",
       image: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=700&q=80",
-      description: "Kickstart your day with any signature espresso beverage paired with our freshly baked almond croissant or sunlit avocado toast."
+      description: "Commence your morning with any handcrafted espresso beverage paired with our twice-baked almond croissant or sunlit Hass avocado levain toast."
     },
     {
       id: "off2",
-      badge: "Student Special",
-      title: "Campus Study Grind 25% Off",
-      subtitle: "Valid on all Coffee, Sandwiches & Snacks",
+      badge: "Student & Scholar",
+      title: "Creative Scholar Privilege",
+      subtitle: "25% Privilege across Hand-Pulled Brews & Artisan Bites",
       code: "STUDENT25",
       discountText: "Flat 25% Off",
       regularPrice: "Any Order",
       offerPrice: "Min $15",
       image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=700&q=80",
-      description: "Fuel your study sessions with fast café Wi-Fi and 25% off all menu essentials. Flash student ID or use code."
+      description: "Fuel your creative focus and academic breakthroughs with gigabit Wi-Fi, ambient lounge corners, and 25% privilege on all culinary craft."
     },
     {
       id: "off3",
-      badge: "Weekend Craze",
-      title: "BOGO Gourmet Pizza Weekend",
-      subtitle: "Buy 1 Wood-Fired Pizza, Get 2nd at 50% Off",
+      badge: "Weekend Hearth",
+      title: "Wood-Fired Neapolitan Feast",
+      subtitle: "Order Any Sourdough Pizza & Receive 50% Off A Second",
       code: "WEEKENDPIZZA",
       discountText: "Buy 1 Get 50% Off",
       regularPrice: "$28.45",
       offerPrice: "$19.99",
       image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=700&q=80",
-      description: "Gather your friends every Friday to Sunday! Order any artisan sourdough pizza and enjoy the second one half price."
+      description: "Celebrate Friday through Sunday with wood-fired slow-fermented pies crowned with Italian burrata, San Marzano tomatoes, and fragrant basil."
     },
     {
       id: "off4",
-      badge: "Buy 1 Get 1",
-      title: "Happy Hour BOGO Brews",
-      subtitle: "Every weekday between 4:00 PM - 6:30 PM",
+      badge: "Golden Hour",
+      title: "Aperitivo & Barista Duet",
+      subtitle: "Complimentary Companion Brew on Weekday Afternoons",
       code: "BOGOBREW",
-      discountText: "BOGO Free",
+      discountText: "BOGO Companion",
       regularPrice: "$10.98",
       offerPrice: "$5.49",
       image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=80",
-      description: "Bring a companion or double your caffeine hit! Order any large coffee or iced brew and receive a second one on the house."
+      description: "Unwind during twilight hours from 4:00 PM – 6:30 PM. Order any signature espresso or nitro cold brew and receive a companion cup on the house."
     }
   ],
 
   coupons: [
-    { code: "BLISS20", discount: 20, type: "percent", desc: "20% off all orders above $20", minOrder: 20 },
-    { code: "STUDENT25", discount: 25, type: "percent", desc: "25% student discount on entire menu", minOrder: 15 },
-    { code: "WELCOME50", discount: 5.0, type: "flat", desc: "$5 flat discount on your first order", minOrder: 18 },
-    { code: "COFFEEFEVER", discount: 3.5, type: "flat", desc: "$3.50 off on Coffee & Dessert combos", minOrder: 12 }
+    { code: "BLISS20", discount: 20, type: "percent", desc: "20% privilege on orders above $20", minOrder: 20 },
+    { code: "STUDENT25", discount: 25, type: "percent", desc: "25% scholar privilege on entire menu", minOrder: 15 },
+    { code: "WELCOME50", discount: 5.0, type: "flat", desc: "$5 welcome privilege on your maiden order", minOrder: 18 },
+    { code: "COFFEEFEVER", discount: 3.5, type: "flat", desc: "$3.50 privilege on Coffee & Patisserie pairings", minOrder: 12 }
   ],
 
   gallery: [
