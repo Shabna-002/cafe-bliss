@@ -367,7 +367,11 @@ def serve_index():
 @app.route('/admin')
 @app.route('/admin/')
 @app.route('/admin.html')
+@app.route('/admin/index.html')
 def serve_admin():
+    admin_folder = os.path.join(BASE_DIR, 'admin')
+    if os.path.exists(os.path.join(admin_folder, 'index.html')):
+        return send_from_directory(admin_folder, 'index.html')
     return send_from_directory(BASE_DIR, 'admin.html')
 
 @app.route('/health')

@@ -70,45 +70,81 @@ const AdminApp = {
   // -------------------------------------------------------------
   checkAuth() {
     const savedToken = localStorage.getItem('bliss_admin_token');
-    const overlay = document.getElementById('admin-login-overlay');
-
     if (savedToken) {
       this.token = savedToken;
-      if (overlay) overlay.style.display = 'none';
+      this.hideLoginOverlay();
       this.startApp();
     } else {
-      if (overlay) overlay.style.display = 'flex';
+      this.showLoginOverlay();
+    }
+  },
+
+  hideLoginOverlay() {
+    const overlay = document.getElementById('admin-login-overlay');
+    if (overlay) {
+      overlay.style.display = 'none';
+      overlay.classList.remove('active');
+    }
+  },
+
+  showLoginOverlay() {
+    const overlay = document.getElementById('admin-login-overlay');
+    if (overlay) {
+      overlay.style.display = 'flex';
+      overlay.classList.add('active');
     }
   },
 
   async login(username, password) {
+    const u = (username || '').trim().toLowerCase();
+    const p = (password || '').trim();
+
+    const submitBtn = document.getElementById('btn-login-submit');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+    }
+
     try {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username: u, password: p })
       });
 
-      if (res.ok) {
+      const ctype = res.headers.get('content-type') || '';
+      if (res.ok && ctype.includes('application/json')) {
         const data = await res.json();
-        this.token = data.token;
-        localStorage.setItem('bliss_admin_token', this.token);
-        document.getElementById('admin-login-overlay').style.display = 'none';
-        this.startApp();
-        return;
+        if (data.success && data.token) {
+          this.token = data.token;
+          localStorage.setItem('bliss_admin_token', this.token);
+          this.hideLoginOverlay();
+          this.startApp();
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Dashboard';
+          }
+          return;
+        }
       }
     } catch (err) {
       console.log('Server login API unavailable, using offline fallback auth');
     }
 
-    // Offline / Demo fallback
-    if (username.toLowerCase() === 'admin' && password === 'bliss123') {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Dashboard';
+    }
+
+    // Resilient local / demo authentication
+    if (u === 'admin' && p === 'bliss123') {
       this.token = 'demo-admin-token-' + Date.now();
       localStorage.setItem('bliss_admin_token', this.token);
-      document.getElementById('admin-login-overlay').style.display = 'none';
+      this.hideLoginOverlay();
       this.startApp();
+      this.playChime();
     } else {
-      alert('Invalid username or password. Default is: admin / bliss123');
+      alert('Invalid username or password.\n\nDefault Admin Credentials:\nUsername: admin\nPassword: bliss123');
     }
   },
 
@@ -116,7 +152,7 @@ const AdminApp = {
     localStorage.removeItem('bliss_admin_token');
     this.token = null;
     if (this.pollingInterval) clearInterval(this.pollingInterval);
-    document.getElementById('admin-login-overlay').style.display = 'flex';
+    this.showLoginOverlay();
   },
 
   startApp() {
@@ -140,11 +176,11 @@ const AdminApp = {
   async loadOrders(isBackgroundPoll = false) {
     try {
       const res = await fetch('/api/admin/orders');
-      if (res.ok) {
+      const ctype = res.headers.get('content-type') || '';
+      if (res.ok && ctype.includes('application/json')) {
         const data = await res.json();
         const incomingOrders = data.orders || [];
 
-        // Check if new orders arrived to play sound chime
         if (isBackgroundPoll && incomingOrders.length > this.lastKnownOrderCount && this.lastKnownOrderCount > 0) {
           this.playChime();
         }
@@ -154,15 +190,180 @@ const AdminApp = {
         this.updateOrdersBadge();
         return;
       }
-    } catch (e) {
-      // Fallback: Read from LocalStorage if server isn't running
-      const saved = localStorage.getItem('bliss_orders');
-      if (saved) {
-        this.orders = JSON.parse(saved);
-        this.renderOrders();
-        this.updateOrdersBadge();
-      }
+    } catch (e) {}
+
+    // Fallback: Read from LocalStorage or seed default sample orders if none exist
+    let ordersList = [];
+    const saved = localStorage.getItem('bliss_orders');
+    if (saved) {
+      try { ordersList = JSON.parse(saved); } catch(err) { ordersList = []; }
     }
+
+    if (!ordersList || ordersList.length === 0) {
+      ordersList = this.getInitialSampleOrders();
+      localStorage.setItem('bliss_orders', JSON.stringify(ordersList));
+    }
+
+    if (isBackgroundPoll && ordersList.length > this.lastKnownOrderCount && this.lastKnownOrderCount > 0) {
+      this.playChime();
+    }
+    this.lastKnownOrderCount = ordersList.length;
+    this.orders = ordersList;
+    this.renderOrders();
+    this.updateOrdersBadge();
+  },
+
+  getInitialSampleOrders() {
+    return [
+      {
+        order_id: "BLISS-104921",
+        orderId: "BLISS-104921",
+        customer_name: "Samantha Hayes",
+        customer_phone: "+1 (555) 349-2810",
+        customer_email: "samantha.hayes@example.com",
+        order_type: "delivery",
+        orderType: "delivery",
+        address: "42 Artisan Boulevard, Apt 4B, Metro City",
+        table_number: "",
+        items: [
+          { id: "c1", name: "Bliss Signature Caramel Macchiato", price: 5.49, quantity: 2 },
+          { id: "b1", name: "Sunlit Avocado Sourdough Toast", price: 8.95, quantity: 1 }
+        ],
+        subtotal: 19.93,
+        discount: 0.0,
+        tax: 1.00,
+        delivery_fee: 2.50,
+        total_amount: 23.43,
+        totals: { subtotal: 19.93, discount: 0.0, tax: 1.00, deliveryFee: 2.50, grandTotal: 23.43 },
+        payment_method: "UPI / GPay",
+        paymentMethod: "UPI / GPay",
+        payment_status: "paid",
+        paymentStatus: "paid",
+        payment_ref: "UPI-839210498210",
+        order_status: "preparing",
+        orderStatus: "Preparing",
+        status_step: 3,
+        statusStep: 3,
+        estimated_minutes: 12,
+        estimatedMinutes: 12,
+        notes: "Please extra caramel drizzle",
+        created_at: new Date(Date.now() - 14 * 60000).toISOString(),
+        createdAt: new Date(Date.now() - 14 * 60000).toISOString()
+      },
+      {
+        order_id: "BLISS-104920",
+        orderId: "BLISS-104920",
+        customer_name: "Marcus Vance",
+        customer_phone: "+1 (555) 782-9901",
+        customer_email: "marcus.v@example.com",
+        order_type: "dinein",
+        orderType: "dinein",
+        address: "",
+        table_number: "7",
+        items: [
+          { id: "bg1", name: "Truffle Mushroom Angus Burger", price: 12.95, quantity: 1 },
+          { id: "sk1", name: "Truffle Parmesan Hand-Cut Fries", price: 5.95, quantity: 1 },
+          { id: "c3", name: "Nitro Cold Brew with Vanilla Cream", price: 5.95, quantity: 1 }
+        ],
+        subtotal: 24.85,
+        discount: 2.50,
+        tax: 1.12,
+        delivery_fee: 0.0,
+        total_amount: 23.47,
+        totals: { subtotal: 24.85, discount: 2.50, tax: 1.12, deliveryFee: 0.0, grandTotal: 23.47 },
+        payment_method: "Credit Card",
+        paymentMethod: "Credit Card",
+        payment_status: "paid",
+        paymentStatus: "paid",
+        payment_ref: "CARD-48201948",
+        order_status: "ready",
+        orderStatus: "Ready",
+        status_step: 4,
+        statusStep: 4,
+        estimated_minutes: 5,
+        estimatedMinutes: 5,
+        notes: "Dine-in at Table 7",
+        created_at: new Date(Date.now() - 25 * 60000).toISOString(),
+        createdAt: new Date(Date.now() - 25 * 60000).toISOString()
+      },
+      {
+        order_id: "BLISS-104919",
+        orderId: "BLISS-104919",
+        customer_name: "Elena Rostova",
+        customer_phone: "+1 (555) 921-6543",
+        customer_email: "elena.r@example.com",
+        order_type: "pickup",
+        orderType: "pickup",
+        address: "",
+        table_number: "",
+        items: [
+          { id: "pz1", name: "Neapolitan Burrata Margherita Pizza", price: 13.50, quantity: 1 },
+          { id: "d1", name: "Belgian Molten Chocolate Lava Cake", price: 6.95, quantity: 1 }
+        ],
+        subtotal: 20.45,
+        discount: 0.0,
+        tax: 1.02,
+        delivery_fee: 0.0,
+        total_amount: 21.47,
+        totals: { subtotal: 20.45, discount: 0.0, tax: 1.02, deliveryFee: 0.0, grandTotal: 21.47 },
+        payment_method: "Apple Pay",
+        paymentMethod: "Apple Pay",
+        payment_status: "paid",
+        paymentStatus: "paid",
+        payment_ref: "APL-77401928",
+        order_status: "completed",
+        orderStatus: "Completed",
+        status_step: 5,
+        statusStep: 5,
+        estimated_minutes: 0,
+        estimatedMinutes: 0,
+        notes: "Picked up with thanks",
+        created_at: new Date(Date.now() - 120 * 60000).toISOString(),
+        createdAt: new Date(Date.now() - 120 * 60000).toISOString()
+      }
+    ];
+  },
+
+  getInitialEmailLogs() {
+    return [
+      {
+        order_id: "BLISS-104921",
+        recipient: "owner@cafebliss.com",
+        subject: "New Order Alert: #BLISS-104921 ($23.43)",
+        body_html: `<div style="font-family: sans-serif; padding: 20px; border: 1px solid #ebd9c8; border-radius: 8px;"><h3 style="color:#c27835;">Café Bliss – New Order Notification</h3><p><strong>Order ID:</strong> #BLISS-104921</p><p><strong>Customer:</strong> Samantha Hayes (+1 555-349-2810)</p><p><strong>Type:</strong> DELIVERY</p><p><strong>Total:</strong> $23.43 (PAID)</p><hr style="border:none; border-top:1px dashed #ebd9c8;"><p style="font-size:12px;color:#7d6b5c;">Automated dispatch to cafeteria owner inbox.</p></div>`,
+        sent_at: new Date(Date.now() - 14 * 60000).toISOString(),
+        status: "Delivered"
+      },
+      {
+        order_id: "BLISS-104920",
+        recipient: "owner@cafebliss.com",
+        subject: "New Order Alert: #BLISS-104920 ($23.47)",
+        body_html: `<div style="font-family: sans-serif; padding: 20px; border: 1px solid #ebd9c8; border-radius: 8px;"><h3 style="color:#c27835;">Café Bliss – New Order Notification</h3><p><strong>Order ID:</strong> #BLISS-104920</p><p><strong>Customer:</strong> Marcus Vance (+1 555-782-9901)</p><p><strong>Type:</strong> DINE-IN (Table 7)</p><p><strong>Total:</strong> $23.47 (PAID)</p><hr style="border:none; border-top:1px dashed #ebd9c8;"><p style="font-size:12px;color:#7d6b5c;">Automated dispatch to cafeteria owner inbox.</p></div>`,
+        sent_at: new Date(Date.now() - 25 * 60000).toISOString(),
+        status: "Delivered"
+      }
+    ];
+  },
+
+  getInitialNotifications() {
+    return [
+      {
+        id: 1,
+        order_id: "BLISS-104921",
+        title: "New Order #BLISS-104921 Received!",
+        message: "Samantha Hayes placed a $23.43 (delivery) order.",
+        is_read: 0,
+        created_at: new Date(Date.now() - 14 * 60000).toISOString()
+      },
+      {
+        id: 2,
+        order_id: "BLISS-104920",
+        title: "New Order #BLISS-104920 Received!",
+        message: "Marcus Vance placed a $23.47 (dine-in) order.",
+        is_read: 1,
+        created_at: new Date(Date.now() - 25 * 60000).toISOString()
+      }
+    ];
   },
 
   updateOrdersBadge() {
@@ -428,7 +629,8 @@ const AdminApp = {
   async loadAnalytics() {
     try {
       const res = await fetch('/api/admin/analytics');
-      if (res.ok) {
+      const ctype = res.headers.get('content-type') || '';
+      if (res.ok && ctype.includes('application/json')) {
         const data = await res.json();
         const s = data.summary || {};
         this.renderMetrics(s);
@@ -502,13 +704,24 @@ const AdminApp = {
   async loadMenu() {
     try {
       const res = await fetch('/api/admin/menu');
-      if (res.ok) {
+      const ctype = res.headers.get('content-type') || '';
+      if (res.ok && ctype.includes('application/json')) {
         const data = await res.json();
         this.menuItems = data.items || [];
         this.renderMenu();
         return;
       }
     } catch (e) {}
+
+    // Check custom saved menu or fallback to CAFE_DATA
+    const savedMenu = localStorage.getItem('bliss_menu_custom');
+    if (savedMenu) {
+      try {
+        this.menuItems = JSON.parse(savedMenu);
+        this.renderMenu();
+        return;
+      } catch (e) {}
+    }
 
     if (window.CAFE_DATA?.menuItems) {
       this.menuItems = window.CAFE_DATA.menuItems.map(item => ({
@@ -584,7 +797,8 @@ const AdminApp = {
   async toggleStock(itemId) {
     try {
       const res = await fetch(`/api/admin/menu/${itemId}/toggle-stock`, { method: 'PATCH' });
-      if (res.ok) {
+      const ctype = res.headers.get('content-type') || '';
+      if (res.ok && ctype.includes('application/json')) {
         this.loadMenu();
         return;
       }
@@ -592,7 +806,8 @@ const AdminApp = {
 
     const item = this.menuItems.find(i => i.id === itemId);
     if (item) {
-      item.isAvailable = !item.isAvailable;
+      item.isAvailable = item.isAvailable === false ? true : false;
+      localStorage.setItem('bliss_menu_custom', JSON.stringify(this.menuItems));
       this.renderMenu();
     }
   },
@@ -600,12 +815,17 @@ const AdminApp = {
   async deleteMenuItem(itemId) {
     if (!confirm('Are you sure you want to delete this delicacy from the active menu?')) return;
     try {
-      await fetch(`/api/admin/menu/${itemId}`, { method: 'DELETE' });
-      this.loadMenu();
-    } catch (e) {
-      this.menuItems = this.menuItems.filter(i => i.id !== itemId);
-      this.renderMenu();
-    }
+      const res = await fetch(`/api/admin/menu/${itemId}`, { method: 'DELETE' });
+      const ctype = res.headers.get('content-type') || '';
+      if (res.ok && ctype.includes('application/json')) {
+        this.loadMenu();
+        return;
+      }
+    } catch (e) {}
+
+    this.menuItems = this.menuItems.filter(i => i.id !== itemId);
+    localStorage.setItem('bliss_menu_custom', JSON.stringify(this.menuItems));
+    this.renderMenu();
   },
 
   openEditModal(itemId) {
@@ -632,7 +852,8 @@ const AdminApp = {
   async loadEmailLogs() {
     try {
       const res = await fetch('/api/admin/email-logs');
-      if (res.ok) {
+      const ctype = res.headers.get('content-type') || '';
+      if (res.ok && ctype.includes('application/json')) {
         const data = await res.json();
         this.emailLogs = data.emails || [];
         this.renderEmailLogs();
@@ -640,17 +861,16 @@ const AdminApp = {
       }
     } catch (e) {}
 
-    // Sample fallback
-    this.emailLogs = [
-      {
-        order_id: 'BLISS-104921',
-        recipient: 'owner@cafebliss.com',
-        subject: '🚨 New Order Alert: #BLISS-104921 ($23.43)',
-        sent_at: new Date().toISOString(),
-        status: 'Delivered',
-        body_html: '<div style="padding: 20px; font-family: sans-serif;"><h2>Café Bliss Kitchen Order</h2><p>Customer: Samantha Hayes ($23.43)</p></div>'
-      }
-    ];
+    let logs = [];
+    const saved = localStorage.getItem('bliss_email_logs');
+    if (saved) {
+      try { logs = JSON.parse(saved); } catch (e) { logs = []; }
+    }
+    if (!logs || logs.length === 0) {
+      logs = this.getInitialEmailLogs();
+      localStorage.setItem('bliss_email_logs', JSON.stringify(logs));
+    }
+    this.emailLogs = logs;
     this.renderEmailLogs();
   },
 
@@ -700,7 +920,8 @@ const AdminApp = {
   async loadNotifications() {
     try {
       const res = await fetch('/api/admin/notifications');
-      if (res.ok) {
+      const ctype = res.headers.get('content-type') || '';
+      if (res.ok && ctype.includes('application/json')) {
         const data = await res.json();
         const unread = data.unreadCount || 0;
         const badge = document.getElementById('notif-badge-count');
@@ -708,8 +929,25 @@ const AdminApp = {
           badge.textContent = unread;
           badge.style.display = unread > 0 ? 'flex' : 'none';
         }
+        return;
       }
     } catch (e) {}
+
+    let notifs = [];
+    const saved = localStorage.getItem('bliss_notifications');
+    if (saved) {
+      try { notifs = JSON.parse(saved); } catch (e) { notifs = []; }
+    }
+    if (!notifs || notifs.length === 0) {
+      notifs = this.getInitialNotifications();
+      localStorage.setItem('bliss_notifications', JSON.stringify(notifs));
+    }
+    const unread = notifs.filter(n => !n.is_read).length;
+    const badge = document.getElementById('notif-badge-count');
+    if (badge) {
+      badge.textContent = unread;
+      badge.style.display = unread > 0 ? 'flex' : 'none';
+    }
   },
 
   // -------------------------------------------------------------
