@@ -50,6 +50,11 @@ const CartEngine = {
     const product = window.CAFE_DATA?.menuItems.find(item => item.id === itemId);
     if (!product) return;
 
+    if (product.isAvailable === false || product.is_available === 0) {
+      if (window.Toast) Toast.show(`Sorry, "${product.name}" is currently out of stock!`, 'warning');
+      return;
+    }
+
     const existingIndex = this.items.findIndex(item => item.id === itemId);
     if (existingIndex > -1) {
       this.items[existingIndex].quantity += quantity;
@@ -346,39 +351,153 @@ const CartEngine = {
     }
   },
 
-  handleOrderSubmission(formData) {
-    const totals = this.getTotals();
-    const orderId = 'BLISS-' + Math.floor(100000 + Math.random() * 900000);
-    const timestamp = new Date().toISOString();
+  // ------------------------------------------
+  // PAYMENT SIMULATION & PROCESSING ENGINE
+  // ------------------------------------------
+  simulationMode: 'normal', // normal, success, fail
 
-    const newOrder = {
-      orderId,
-      timestamp,
+  setPaymentSimulation(mode) {
+    this.simulationMode = mode;
+    if (mode === 'fail') {
+      if (window.Toast) Toast.show('Simulation Mode: Next payment attempt will be DECLINED for testing ❌', 'warning');
+      const banner = document.getElementById('payment-status-banner');
+      if (banner) {
+        banner.style.display = 'flex';
+        banner.className = 'payment-status-feedback error';
+        banner.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <span>Simulation: Mode set to <strong>DECLINE</strong>. Click Pay to test error handling.</span>';
+      }
+    } else if (mode === 'success') {
+      if (window.Toast) Toast.show('Simulation Mode: Payment will be APPROVED instantly ✅', 'success');
+      const banner = document.getElementById('payment-status-banner');
+      if (banner) {
+        banner.style.display = 'flex';
+        banner.className = 'payment-status-feedback success';
+        banner.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Simulation: Mode set to <strong>APPROVED</strong>. Click Pay to place order.</span>';
+      }
+    }
+  },
+
+  async handleOrderSubmission(formData) {
+    const totals = this.getTotals();
+    const banner = document.getElementById('payment-status-banner');
+    const veil = document.getElementById('payment-processing-veil');
+
+    // 1. Check if user simulated a failure
+    if (this.simulationMode === 'fail') {
+      if (veil) veil.classList.add('active');
+      await new Promise(r => setTimeout(r, 900));
+      if (veil) veil.classList.remove('active');
+
+      if (banner) {
+        banner.style.display = 'flex';
+        banner.className = 'payment-status-feedback error';
+        banner.innerHTML = `
+          <i class="fa-solid fa-circle-xmark fa-lg"></i>
+          <div>
+            <strong>Payment Declined (Status: Failed)</strong>
+            <div style="font-size: 0.8rem; margin-top: 2px;">Gateway refused the transaction. Please retry with a valid card or switch to UPI / Cash.</div>
+          </div>
+        `;
+      }
+      if (window.Toast) Toast.show('Payment failed! Transaction was declined by bank gateway ❌', 'error');
+      if (window.A11yEngine) window.A11yEngine.playTone(240, 0.2);
+      this.simulationMode = 'normal';
+      return;
+    }
+
+    // 2. Normal / Success Flow: Show 256-bit SSL processing veil
+    if (veil) {
+      veil.classList.add('active');
+      veil.innerHTML = `
+        <div class="payment-spinner-cup">
+          <i class="fa-solid fa-mug-hot"></i>
+        </div>
+        <h3 style="font-size: 1.3rem; margin-bottom: 6px;">Authorizing Payment Gateway</h3>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">Processing 256-bit SSL encrypted transaction with ${formData.paymentMethod}...</p>
+      `;
+    }
+
+    await new Promise(r => setTimeout(r, 1100));
+
+    if (veil) {
+      veil.innerHTML = `
+        <div style="font-size: 3rem; color: #2ecc71; margin-bottom: 12px; animation: popIn 0.3s ease;">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <h3 style="font-size: 1.35rem; color: #2ecc71; margin-bottom: 6px;">Payment Verified: PAID</h3>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">Saving order permanently in Café Bliss database...</p>
+      `;
+    }
+
+    await new Promise(r => setTimeout(r, 600));
+
+    // 3. Dispatch to Backend API
+    const orderPayload = {
       customer: formData,
       items: [...this.items],
+      totals: totals,
       orderType: this.orderType,
-      totals,
-      paymentMethod: formData.paymentMethod || 'Credit Card / UPI',
-      status: 'confirmed', // stages: confirmed -> brewing -> packing -> out_for_delivery -> delivered
-      statusStep: 1,
-      estimatedMinutes: 20
+      paymentMethod: formData.paymentMethod,
+      paymentStatus: 'Paid',
+      paymentRef: 'TXN-' + Math.floor(100000000 + Math.random() * 900000000),
+      notes: formData.notes || ''
     };
 
-    this.orders.unshift(newOrder);
+    let createdOrder = null;
+
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderPayload)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success && result.order) {
+          createdOrder = result.order;
+        }
+      }
+    } catch (err) {
+      console.log('Backend API unreachable, using resilient client persistence:', err);
+    }
+
+    // Resilient fallback if running without backend server
+    if (!createdOrder) {
+      createdOrder = {
+        orderId: 'BLISS-' + Math.floor(100000 + Math.random() * 900000),
+        customer: formData,
+        items: [...this.items],
+        orderType: this.orderType,
+        totals: totals,
+        paymentMethod: formData.paymentMethod,
+        paymentStatus: 'Paid',
+        paymentRef: orderPayload.paymentRef,
+        orderStatus: 'New',
+        statusStep: 1,
+        estimatedMinutes: this.orderType === 'delivery' ? 20 : 15,
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    // Cache order in local list
+    this.orders.unshift(createdOrder);
     this.saveToStorage();
 
-    // Clear cart after successful order
+    // Clear cart
     this.clearCart();
+    if (veil) veil.classList.remove('active');
+    if (banner) banner.style.display = 'none';
     this.closeCheckoutModal();
 
-    // Trigger Success Chime
+    // Trigger Success Audio Chime
     if (window.A11yEngine) window.A11yEngine.playSuccessChime();
 
     // Show Confirmation Modal
-    this.showOrderConfirmation(newOrder);
+    this.showOrderConfirmation(createdOrder);
 
-    // Start Live tracking simulation
-    this.startOrderTracking(newOrder);
+    // Start Live real-time status tracking
+    this.startOrderTracking(createdOrder);
   },
 
   showOrderConfirmation(order) {
@@ -391,12 +510,14 @@ const CartEngine = {
     const typeEl = document.getElementById('success-order-type');
     const timeEl = document.getElementById('success-order-eta');
     const itemsListEl = document.getElementById('success-order-items');
+    const payBadge = document.getElementById('success-payment-badge');
 
     if (idEl) idEl.textContent = order.orderId;
     if (nameEl) nameEl.textContent = order.customer.name;
-    if (totalEl) totalEl.textContent = `$${order.totals.grandTotal.toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `$${Number(order.totals.grandTotal).toFixed(2)}`;
     if (typeEl) typeEl.textContent = order.orderType.toUpperCase();
-    if (timeEl) timeEl.textContent = `${order.estimatedMinutes} mins`;
+    if (timeEl) timeEl.textContent = `${order.estimatedMinutes || 20} mins`;
+    if (payBadge) payBadge.textContent = (order.paymentStatus || 'PAID').toUpperCase();
 
     if (itemsListEl) {
       itemsListEl.innerHTML = order.items.map(i => `
@@ -420,36 +541,61 @@ const CartEngine = {
   },
 
   // ------------------------------------------
-  // LIVE ORDER TRACKING
+  // REAL-TIME LIVE ORDER TRACKING (POLLING BACKEND)
   // ------------------------------------------
   startOrderTracking(order) {
     this.activeTrackingOrder = order;
+    this.renderTrackingModal(order);
 
-    // Simulated progress transitions
     if (this.trackingTimer) clearInterval(this.trackingTimer);
 
-    let currentStep = 1;
-    this.trackingTimer = setInterval(() => {
-      currentStep++;
-      if (currentStep <= 5) {
-        order.statusStep = currentStep;
-        if (currentStep === 2) order.status = 'Kitchen Preparing & Brewing';
-        if (currentStep === 3) order.status = 'Fresh Packaging & Quality Seal';
-        if (currentStep === 4) order.status = order.orderType === 'delivery' ? 'Out for Delivery with Courier' : 'Ready at Pickup Counter!';
-        if (currentStep === 5) {
-          order.status = 'Delivered & Enjoyed';
-          clearInterval(this.trackingTimer);
+    // Poll backend every 3.5 seconds for real-time status updates from Admin Dashboard
+    this.trackingTimer = setInterval(async () => {
+      if (!this.activeTrackingOrder) return;
+      const orderId = this.activeTrackingOrder.orderId;
+
+      try {
+        const res = await fetch(`/api/orders/${orderId}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.order) {
+            const remoteOrder = data.order;
+            const prevStep = this.activeTrackingOrder.statusStep;
+
+            // Check if status changed
+            if (remoteOrder.statusStep !== prevStep || remoteOrder.orderStatus !== this.activeTrackingOrder.orderStatus) {
+              this.activeTrackingOrder.orderStatus = remoteOrder.orderStatus;
+              this.activeTrackingOrder.statusStep = remoteOrder.statusStep;
+              this.activeTrackingOrder.estimatedMinutes = remoteOrder.estimatedMinutes;
+
+              // Play chime on status advancement
+              if (window.A11yEngine) window.A11yEngine.playSuccessChime();
+              if (window.Toast) {
+                Toast.show(`Order #${orderId} Update: ${remoteOrder.orderStatus} ☕`, 'info');
+              }
+
+              // Update in saved orders array
+              const idx = this.orders.findIndex(o => o.orderId === orderId);
+              if (idx > -1) {
+                this.orders[idx].orderStatus = remoteOrder.orderStatus;
+                this.orders[idx].statusStep = remoteOrder.statusStep;
+                this.saveToStorage();
+              }
+
+              this.renderTrackingModal(this.activeTrackingOrder);
+            }
+          }
         }
-        this.saveToStorage();
-        this.renderTrackingModal(order);
+      } catch (err) {
+        // Simulated local advancement if testing purely offline without backend
       }
-    }, 7000); // 7s per stage for demonstrative live simulation
+    }, 3500);
   },
 
   checkActiveTracking() {
     if (this.orders.length > 0) {
       const latest = this.orders[0];
-      if (latest && latest.statusStep < 5) {
+      if (latest && (latest.statusStep || 1) < 5) {
         this.startOrderTracking(latest);
       }
     }
@@ -460,8 +606,8 @@ const CartEngine = {
       if (window.Toast) Toast.show('No active orders found yet. Treat yourself to a warm coffee first! ☕', 'info');
       return;
     }
-    const latest = this.orders[0];
-    this.renderTrackingModal(latest);
+    const targetOrder = this.activeTrackingOrder || this.orders[0];
+    this.renderTrackingModal(targetOrder);
     const modal = document.getElementById('tracking-modal');
     if (modal) {
       modal.classList.add('active');
@@ -481,40 +627,76 @@ const CartEngine = {
     const modal = document.getElementById('tracking-modal');
     if (!modal || !order) return;
 
+    // Render Recent Orders pills if customer has placed multiple orders
+    this.renderRecentOrdersBar(order.orderId);
+
     const idEl = document.getElementById('track-order-id');
     const statusPill = document.getElementById('track-status-pill');
     const etaEl = document.getElementById('track-eta-countdown');
     const addressEl = document.getElementById('track-delivery-address');
 
+    const step = order.statusStep || 1;
+    const statusText = order.orderStatus || order.status || 'New';
+
     if (idEl) idEl.textContent = order.orderId;
-    if (statusPill) statusPill.textContent = order.status;
+    if (statusPill) {
+      statusPill.textContent = statusText.toUpperCase();
+      statusPill.className = `status-pill status-${statusText.toLowerCase()}`;
+    }
     if (etaEl) {
-      const remainingMins = Math.max(0, 20 - (order.statusStep * 4));
-      etaEl.textContent = remainingMins > 0 ? `${remainingMins} mins` : 'Arrived / Ready';
+      const remainingMins = Math.max(0, 20 - (step * 4));
+      etaEl.textContent = step >= 5 ? 'Completed' : `${remainingMins > 0 ? remainingMins : 3} mins`;
     }
     if (addressEl) {
-      addressEl.textContent = order.orderType === 'dinein' 
-        ? `Dine-In Table #${order.customer.tableNumber || '5'}` 
+      addressEl.textContent = order.orderType === 'dinein'
+        ? `Dine-In Table #${order.customer.tableNumber || '5'}`
         : (order.customer.address || 'Artisan Boulevard Pickup Counter');
     }
 
-    // Update Steps
+    // Update 5-stage stepper
     const steps = [1, 2, 3, 4, 5];
     steps.forEach(stepNum => {
       const stepEl = document.getElementById(`track-step-${stepNum}`);
       if (stepEl) {
         stepEl.classList.remove('completed', 'active');
-        if (order.statusStep > stepNum) {
+        if (step > stepNum) {
           stepEl.classList.add('completed');
-        } else if (order.statusStep === stepNum) {
+        } else if (step === stepNum) {
           stepEl.classList.add('active');
         }
       }
     });
   },
 
+  renderRecentOrdersBar(activeOrderId) {
+    const bar = document.getElementById('recent-orders-bar');
+    if (!bar) return;
+
+    if (this.orders.length <= 1) {
+      bar.style.display = 'none';
+      return;
+    }
+
+    bar.style.display = 'flex';
+    bar.innerHTML = this.orders.slice(0, 5).map(o => `
+      <button type="button" class="recent-order-pill ${o.orderId === activeOrderId ? 'active' : ''}" onclick="CartEngine.switchTrackingOrder('${o.orderId}')">
+        #${o.orderId} (${o.orderStatus || 'New'})
+      </button>
+    `).join('');
+  },
+
+  switchTrackingOrder(orderId) {
+    const order = this.orders.find(o => o.orderId === orderId);
+    if (order) {
+      this.startOrderTracking(order);
+    }
+  },
+
+  // ------------------------------------------
+  // EVENT BINDINGS
+  // ------------------------------------------
   bindEvents() {
-    // Open cart drawer
+    // Open/Close cart drawer and modals
     document.addEventListener('click', (e) => {
       if (e.target.closest('#navbar-cart-btn') || e.target.closest('#mobile-cart-btn')) {
         this.openDrawer();
@@ -542,6 +724,57 @@ const CartEngine = {
         this.openTrackingModal();
       }
     });
+
+    // Payment Gateway Method Tabs
+    const methodCards = document.querySelectorAll('.payment-method-card');
+    methodCards.forEach(card => {
+      card.addEventListener('click', () => {
+        methodCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        const targetPanelId = card.getAttribute('data-target');
+
+        document.querySelectorAll('.payment-tab-panel').forEach(panel => {
+          panel.classList.remove('active');
+        });
+        const activePanel = document.getElementById(targetPanelId);
+        if (activePanel) activePanel.classList.add('active');
+      });
+    });
+
+    // Card Input Auto-formatting & Brand Detection
+    const cardInput = document.getElementById('chk-card-num');
+    const cardBrandIcon = document.getElementById('card-brand-icon');
+    if (cardInput) {
+      cardInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '').substring(0, 16);
+        let formatted = val.match(/.{1,4}/g)?.join(' ') || val;
+        e.target.value = formatted;
+
+        if (cardBrandIcon) {
+          if (val.startsWith('4')) {
+            cardBrandIcon.className = 'fa-brands fa-cc-visa';
+          } else if (val.startsWith('5')) {
+            cardBrandIcon.className = 'fa-brands fa-cc-mastercard';
+          } else if (val.startsWith('3')) {
+            cardBrandIcon.className = 'fa-brands fa-cc-amex';
+          } else {
+            cardBrandIcon.className = 'fa-solid fa-credit-card';
+          }
+        }
+      });
+    }
+
+    const cardExpInput = document.getElementById('chk-card-exp');
+    if (cardExpInput) {
+      cardExpInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '').substring(0, 4);
+        if (val.length >= 2) {
+          e.target.value = val.substring(0, 2) + '/' + val.substring(2);
+        } else {
+          e.target.value = val;
+        }
+      });
+    }
 
     // Apply coupon form
     const couponForm = document.getElementById('cart-coupon-form');
@@ -592,7 +825,7 @@ const CartEngine = {
         const email = document.getElementById('chk-email')?.value.trim();
         const address = document.getElementById('chk-address')?.value.trim();
         const tableNumber = document.getElementById('chk-table')?.value.trim();
-        const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || 'Online Card / UPI';
+        const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || 'UPI / QR Code';
 
         if (!name || !phone) {
           if (window.Toast) Toast.show('Please provide your name and phone number', 'error');
@@ -611,3 +844,4 @@ const CartEngine = {
 };
 
 window.CartEngine = CartEngine;
+

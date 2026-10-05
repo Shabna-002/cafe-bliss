@@ -80,6 +80,7 @@ const BlissApp = {
     // Render components
     this.renderMenuCategories();
     this.renderMenuItems();
+    this.fetchRemoteMenu();
     this.renderSpecialOffers();
     this.renderGallery();
     this.renderReviews();
@@ -219,6 +220,21 @@ const BlissApp = {
   // ------------------------------------------
   // MENU RENDERING & FILTERING
   // ------------------------------------------
+  async fetchRemoteMenu() {
+    try {
+      const res = await fetch('/api/menu');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.items && data.items.length > 0) {
+          window.CAFE_DATA.menuItems = data.items;
+          this.renderMenuItems();
+        }
+      }
+    } catch (e) {
+      // Offline fallback
+    }
+  },
+
   renderMenuCategories() {
     const catContainer = document.getElementById('menu-category-tabs');
     if (!catContainer) return;
@@ -288,15 +304,17 @@ const BlissApp = {
 
     grid.innerHTML = items.map(item => {
       const isFav = this.wishlist.includes(item.id);
+      const isAvail = item.isAvailable !== false && item.is_available !== 0;
+
       return `
-        <article class="food-card" data-id="${item.id}">
+        <article class="food-card ${!isAvail ? 'out-of-stock' : ''}" data-id="${item.id}">
           <div class="food-card-img-wrap">
             <img src="${item.image}" alt="${item.name}" class="food-card-img" loading="lazy">
             <div class="food-card-badges">
               <span class="diet-badge ${item.isVeg ? 'veg' : 'non-veg'}" title="${item.isVeg ? 'Vegetarian' : 'Non-Vegetarian'}">
                 <span class="diet-badge-dot"></span>
               </span>
-              ${item.badge ? `<span class="tag-badge">${item.badge}</span>` : ''}
+              ${!isAvail ? `<span class="badge-out-of-stock">Sold Out</span>` : (item.badge ? `<span class="tag-badge">${item.badge}</span>` : '')}
             </div>
             <button class="item-wishlist-btn ${isFav ? 'active' : ''}" data-id="${item.id}" onclick="BlissApp.toggleWishlist('${item.id}')" aria-label="Toggle favorite">
               <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
@@ -309,24 +327,30 @@ const BlissApp = {
             <div class="food-card-meta">
               <div class="food-rating">
                 <i class="fa-solid fa-star"></i>
-                <span>${item.rating.toFixed(1)}</span>
-                <span class="food-reviews">(${item.reviewsCount})</span>
+                <span>${item.rating ? Number(item.rating).toFixed(1) : '4.8'}</span>
+                <span class="food-reviews">(${item.reviewsCount || 120})</span>
               </div>
               <div class="food-prep-time">
-                <i class="fa-regular fa-clock"></i> ${item.prepTime}
+                <i class="fa-regular fa-clock"></i> ${item.prepTime || '10 mins'}
               </div>
             </div>
             <h3 class="food-card-title">${item.name}</h3>
             <p class="food-card-desc">${item.description}</p>
             <div class="food-card-footer">
               <div class="food-price-wrap">
-                <span class="food-current-price">$${item.price.toFixed(2)}</span>
-                ${item.originalPrice ? `<span class="food-old-price">$${item.originalPrice.toFixed(2)}</span>` : ''}
+                <span class="food-current-price">$${Number(item.price).toFixed(2)}</span>
+                ${item.originalPrice ? `<span class="food-old-price">$${Number(item.originalPrice).toFixed(2)}</span>` : ''}
               </div>
               <div class="food-card-order-action">
-                <button class="btn btn-add-cart" onclick="CartEngine.addItem('${item.id}')" aria-label="Add ${item.name} to cart">
-                  <i class="fa-solid fa-plus"></i> Add
-                </button>
+                ${isAvail ? `
+                  <button class="btn btn-add-cart" onclick="CartEngine.addItem('${item.id}')" aria-label="Add ${item.name} to cart">
+                    <i class="fa-solid fa-plus"></i> Add
+                  </button>
+                ` : `
+                  <button class="btn btn-add-cart sold-out" disabled aria-label="${item.name} is currently sold out">
+                    <i class="fa-solid fa-ban"></i> Sold Out
+                  </button>
+                `}
               </div>
             </div>
           </div>
