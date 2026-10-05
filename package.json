@@ -2,6 +2,7 @@
   "name": "cafe-bliss",
   "version": "1.0.0",
   "description": "Café Bliss - Modern, premium, attractive and responsive cafeteria website",
+  "homepage": "https://cafe-bliss.onrender.com",
   "main": "index.html",
   "scripts": {
     "start": "npx serve -s . -l $PORT",

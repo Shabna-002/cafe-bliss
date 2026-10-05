@@ -1,8 +1,10 @@
 # ☕ Café Bliss – Complete Online Food Ordering & Cafeteria Operations System
 
-> 🌐 **GitHub Pages Live (Client):** [https://shabna-002.github.io/cafe-bliss/](https://shabna-002.github.io/cafe-bliss/)  
+> 🚀 **Live Website (Render):** [https://cafe-bliss.onrender.com](https://cafe-bliss.onrender.com)  
+> 🛡️ **Live Admin Dashboard:** [https://cafe-bliss.onrender.com/admin](https://cafe-bliss.onrender.com/admin) *(Username: `admin` | Password: `bliss123`)*  
+> 🌐 **GitHub Pages (Static Demo):** [https://shabna-002.github.io/cafe-bliss/](https://shabna-002.github.io/cafe-bliss/)  
 > 📁 **GitHub Repository:** [https://github.com/Shabna-002/cafe-bliss](https://github.com/Shabna-002/cafe-bliss)  
-> 🚀 **Deploy on Render:** [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Shabna-002/cafe-bliss)
+> ⚡ **Deploy to Render:** [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Shabna-002/cafe-bliss)
 
 A complete, production-ready, full-stack **online food ordering, purchasing, and cafeteria management system** with an SQLite database, Python Flask REST API backend, real-time customer live order tracking, interactive payment gateways, and a secure **Executive Admin Dashboard** for real-time order processing, menu management, and sales analytics.
 
