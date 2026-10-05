@@ -18,8 +18,42 @@ const AdminApp = {
   audioCtx: null,
 
   init() {
-    this.checkAuth();
     this.bindEvents();
+
+    // Check if current URL or hash intends to view Admin Portal
+    const path = (window.location.pathname || '').toLowerCase();
+    const hash = (window.location.hash || '').toLowerCase();
+    const search = (window.location.search || '').toLowerCase();
+
+    const isStandaloneAdminPage = !document.getElementById('admin-view-wrapper') && document.body.classList.contains('admin-body');
+
+    if (isStandaloneAdminPage) {
+      this.checkAuth();
+    } else if (path.includes('admin') || hash.includes('admin') || search.includes('admin')) {
+      this.openAdminPortal();
+    }
+  },
+
+  openAdminPortal() {
+    const wrap = document.getElementById('admin-view-wrapper');
+    if (wrap) {
+      wrap.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      this.checkAuth();
+    }
+  },
+
+  closeAdminPortal() {
+    const wrap = document.getElementById('admin-view-wrapper');
+    if (wrap) {
+      wrap.style.display = 'none';
+      document.body.style.overflow = '';
+      if (window.location.pathname.includes('admin') || window.location.hash === '#admin') {
+        try {
+          history.pushState(null, '', window.location.origin + '/');
+        } catch(e) {}
+      }
+    }
   },
 
   // -------------------------------------------------------------

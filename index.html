@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 
@@ -93,7 +94,7 @@
         </button>
 
         <!-- Admin Dashboard Portal Button -->
-        <a href="admin/" class="btn-nav-admin" title="Café Owner & Kitchen Operations Portal" aria-label="Admin Portal">
+        <a href="#admin" class="btn-nav-admin" id="nav-admin-btn" title="Café Owner & Kitchen Operations Portal" aria-label="Admin Portal" onclick="AdminApp.openAdminPortal(); return false;">
           <i class="fa-solid fa-gauge-high"></i>
           <span>Admin</span>
         </a>
@@ -138,7 +139,7 @@
       <a href="#reservation" class="mobile-nav-link"><i class="fa-solid fa-calendar-check"></i> Book Table</a>
       <a href="#reviews" class="mobile-nav-link"><i class="fa-solid fa-star"></i> Reviews</a>
       <a href="#contact" class="mobile-nav-link"><i class="fa-solid fa-map-location-dot"></i> Contact & Hours</a>
-      <a href="admin/" class="mobile-nav-link" style="color: var(--primary); font-weight: 600;"><i class="fa-solid fa-gauge-high"></i> Admin Portal</a>
+      <a href="#admin" class="mobile-nav-link" style="color: var(--primary); font-weight: 600;" onclick="AdminApp.openAdminPortal(); return false;"><i class="fa-solid fa-gauge-high"></i> Admin Portal</a>
     </div>
 
     <div class="mobile-nav-footer">
@@ -806,7 +807,7 @@
             <a href="#about"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Our Philosophy</a>
             <a href="#gallery"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Visual Journey</a>
             <a href="#reservation"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Table Reservations</a>
-            <a href="admin/"><i class="fa-solid fa-lock" style="font-size: 0.7rem;"></i> Manager Console (Admin)</a>
+            <a href="#admin" onclick="AdminApp.openAdminPortal(); return false;"><i class="fa-solid fa-lock" style="font-size: 0.7rem;"></i> Manager Console (Admin)</a>
           </div>
         </div>
 
@@ -1600,9 +1601,612 @@
   <!-- ==========================================================
        JAVASCRIPT MODULES
        ========================================================== -->
+  <!-- ==========================================================
+       EMBEDDED EXECUTIVE ADMIN PORTAL & LOGIN GATE
+       Accessible on any device/server via navbar button, #admin, or /admin
+       ========================================================== -->
+  <div id="admin-view-wrapper" class="admin-view-wrapper" style="display: none;">
+  <div id="admin-login-overlay" class="admin-login-overlay">
+    <div class="login-card">
+      <div class="login-brand-icon">
+        <i class="fa-solid fa-mug-saucer"></i>
+      </div>
+      <h1 class="login-title">Café <span>Bliss</span></h1>
+      <p class="login-subtitle">Owner & Kitchen Operations Console</p>
+
+      <form id="admin-login-form" class="login-form">
+        <div class="form-group">
+          <label for="admin-user-input">Manager Username</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-user-shield"></i>
+            <input type="text" id="admin-user-input" value="admin" required placeholder="Enter username" autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="admin-pass-input">Security Password</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="admin-pass-input" value="bliss123" required placeholder="Enter password" autocomplete="current-password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="btn-login-submit">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Dashboard
+        </button>
+      </form>
+
+      <div class="demo-credentials-box" id="demo-credentials-box" title="Click to auto-fill default credentials">
+        <i class="fa-solid fa-key"></i> Default Demo Credentials: <strong>admin</strong> / <strong>bliss123</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       TOP ADMIN NAVBAR
+       ========================================================== -->
+  <header class="admin-navbar">
+    <a href="#" class="admin-nav-brand">
+      <div class="brand-logo-icon">
+        <i class="fa-solid fa-mug-hot"></i>
+      </div>
+      <div class="brand-title">
+        Café <span>Bliss</span>
+        <span class="admin-badge-portal">Admin Portal</span>
+      </div>
+    </a>
+
+    <div class="admin-nav-status">
+      <span class="pulse-dot"></span>
+      <span id="sync-status-text">Live Sync Active</span>
+    </div>
+
+    <div class="admin-nav-actions">
+      <!-- Audio Chime Alert Toggle -->
+      <button type="button" class="btn-icon-admin" id="btn-sound-toggle" title="Toggle New Order Chime Sound" aria-label="Toggle Sound Alert">
+        <i class="fa-solid fa-volume-high" id="sound-icon"></i>
+      </button>
+
+      <!-- Notification Center Bell -->
+      <button type="button" class="btn-icon-admin" id="btn-notif-bell" title="Incoming Notifications" aria-label="Notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span class="badge-pill" id="notif-badge-count" style="display: none;">0</span>
+      </button>
+
+      <!-- View Customer Storefront -->
+      <a href="#" onclick="AdminApp.closeAdminPortal(); return false;" class="btn-store-link" title="Open Customer Online Menu">
+        <i class="fa-solid fa-store"></i> Customer Site
+      </a>
+
+      <!-- Logout -->
+      <button type="button" class="btn-logout" id="btn-admin-logout" title="Sign Out">
+        <i class="fa-solid fa-right-from-bracket"></i> Exit
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================================
+       MAIN APP CONTAINER (SIDEBAR + CONTENT)
+       ========================================================== -->
+  <div class="admin-main-container">
+    <!-- Left Navigation Tabs -->
+    <aside class="admin-sidebar">
+      <button type="button" class="admin-tab-btn active" data-tab="orders">
+        <i class="fa-solid fa-bell-concierge"></i>
+        <span>Live Orders</span>
+        <span class="admin-tab-badge badge-new-orders" id="badge-sidebar-orders">0</span>
+      </button>
+
+      <button type="button" class="admin-tab-btn" data-tab="analytics">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Sales & Analytics</span>
+      </button>
+
+      <button type="button" class="admin-tab-btn" data-tab="menu">
+        <i class="fa-solid fa-utensils"></i>
+        <span>Menu Manager</span>
+      </button>
+
+      <button type="button" class="admin-tab-btn" data-tab="emails">
+        <i class="fa-solid fa-envelope-open-text"></i>
+        <span>Owner Emails</span>
+        <span class="admin-tab-badge" style="background: var(--admin-surface-card);" id="badge-sidebar-emails">0</span>
+      </button>
+
+      <button type="button" class="admin-tab-btn" data-tab="settings">
+        <i class="fa-solid fa-sliders"></i>
+        <span>Café Settings</span>
+      </button>
+    </aside>
+
+    <!-- Content Workspace Area -->
+    <main class="admin-content-area">
+
+      <!-- ======================================================
+           TAB 1: LIVE ORDERS MANAGEMENT
+           ====================================================== -->
+      <section id="tab-orders" class="admin-view-section active">
+        <div class="view-header">
+          <div class="view-title-group">
+            <h2>Live Incoming Orders</h2>
+            <p>Real-time order stream from website customers with instant audio chime & status progression.</p>
+          </div>
+          <button type="button" class="btn-admin-primary" id="btn-refresh-orders">
+            <i class="fa-solid fa-rotate"></i> Refresh Feed
+          </button>
+        </div>
+
+        <!-- Filter Tabs & Search -->
+        <div class="orders-controls-bar">
+          <div class="filter-tabs-pills">
+            <button type="button" class="order-filter-pill active" data-filter="all">All Orders</button>
+            <button type="button" class="order-filter-pill" data-filter="new">New (Pending)</button>
+            <button type="button" class="order-filter-pill" data-filter="confirmed">Confirmed</button>
+            <button type="button" class="order-filter-pill" data-filter="preparing">Preparing</button>
+            <button type="button" class="order-filter-pill" data-filter="ready">Ready</button>
+            <button type="button" class="order-filter-pill" data-filter="completed">Completed</button>
+            <button type="button" class="order-filter-pill" data-filter="cancelled">Cancelled</button>
+          </div>
+
+          <div class="orders-search-wrap">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="order-search-input" class="orders-search-input" placeholder="Search Order ID, customer, phone...">
+          </div>
+        </div>
+
+        <!-- Orders Stream Container -->
+        <div id="orders-stream-list" class="orders-stream">
+          <!-- Populated by JavaScript -->
+        </div>
+      </section>
+
+      <!-- ======================================================
+           TAB 2: SALES & REVENUE ANALYTICS
+           ====================================================== -->
+      <section id="tab-analytics" class="admin-view-section">
+        <div class="view-header">
+          <div class="view-title-group">
+            <h2>Financial Sales & Operational Analytics</h2>
+            <p>Track daily, weekly, and monthly sales volume, average order values, and revenue growth.</p>
+          </div>
+        </div>
+
+        <!-- KPI Metric Cards Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-label">Today's Sales</div>
+              <div class="metric-value" id="metric-today-sales">$0.00</div>
+              <div class="metric-sub" id="metric-today-count">0 orders today</div>
+            </div>
+            <div class="metric-icon-wrap metric-icon-gold">
+              <i class="fa-solid fa-calendar-day"></i>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-label">This Week's Revenue</div>
+              <div class="metric-value" id="metric-weekly-sales">$0.00</div>
+              <div class="metric-sub">Past 7 days</div>
+            </div>
+            <div class="metric-icon-wrap metric-icon-blue">
+              <i class="fa-solid fa-calendar-week"></i>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-label">This Month's Revenue</div>
+              <div class="metric-value" id="metric-monthly-sales">$0.00</div>
+              <div class="metric-sub">Past 30 days</div>
+            </div>
+            <div class="metric-icon-wrap metric-icon-green">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-label">Total Lifetime Revenue</div>
+              <div class="metric-value" id="metric-total-revenue">$0.00</div>
+              <div class="metric-sub" id="metric-total-orders">0 total orders</div>
+            </div>
+            <div class="metric-icon-wrap metric-icon-orange">
+              <i class="fa-solid fa-vault"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7-Day Revenue Bar Chart Box -->
+        <div class="analytics-chart-box">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-chart-simple" style="color: var(--accent-gold); margin-right: 8px;"></i> Last 7 Days Revenue Trend</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Hover bars for exact daily revenue & order count</span>
+          </div>
+
+          <div class="bar-chart-container" id="revenue-bar-chart">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Additional Operational Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-label">Average Order Value (AOV)</div>
+              <div class="metric-value" id="metric-aov">$0.00</div>
+              <div class="metric-sub">Per completed customer order</div>
+            </div>
+            <div class="metric-icon-wrap metric-icon-blue">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-label">Active Kitchen Orders</div>
+              <div class="metric-value" id="metric-pending-count">0</div>
+              <div class="metric-sub">New / Preparing</div>
+            </div>
+            <div class="metric-icon-wrap metric-icon-orange">
+              <i class="fa-solid fa-fire-burner"></i>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-label">Menu Delicacies Active</div>
+              <div class="metric-value" id="metric-menu-count">0</div>
+              <div class="metric-sub">Across 9 food categories</div>
+            </div>
+            <div class="metric-icon-wrap metric-icon-gold">
+              <i class="fa-solid fa-bowl-food"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           TAB 3: MENU MANAGEMENT CRUD
+           ====================================================== -->
+      <section id="tab-menu" class="admin-view-section">
+        <div class="view-header">
+          <div class="view-title-group">
+            <h2>Cafeteria Menu Manager</h2>
+            <p>Add new gourmet dishes, update prices, change descriptions, and toggle In-Stock / Out-of-Stock instantly.</p>
+          </div>
+          <button type="button" class="btn-admin-primary" id="btn-open-add-delicacy">
+            <i class="fa-solid fa-plus"></i> Add New Delicacy
+          </button>
+        </div>
+
+        <!-- Category Filter & Search for Menu -->
+        <div class="orders-controls-bar">
+          <div class="filter-tabs-pills" id="menu-cat-filter-pills">
+            <button type="button" class="order-filter-pill active" data-cat="all">All Items</button>
+            <button type="button" class="order-filter-pill" data-cat="coffee">Coffee</button>
+            <button type="button" class="order-filter-pill" data-cat="tea">Tea</button>
+            <button type="button" class="order-filter-pill" data-cat="breakfast">Breakfast</button>
+            <button type="button" class="order-filter-pill" data-cat="burgers">Burgers</button>
+            <button type="button" class="order-filter-pill" data-cat="pizza">Pizza</button>
+            <button type="button" class="order-filter-pill" data-cat="sandwiches">Sandwiches</button>
+            <button type="button" class="order-filter-pill" data-cat="snacks">Snacks</button>
+            <button type="button" class="order-filter-pill" data-cat="fresh-juice">Fresh Juice</button>
+            <button type="button" class="order-filter-pill" data-cat="desserts">Desserts</button>
+          </div>
+
+          <div class="orders-search-wrap">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="menu-search-input" class="orders-search-input" placeholder="Search delicacies by name...">
+          </div>
+        </div>
+
+        <!-- Menu CRUD Grid -->
+        <div id="admin-menu-grid" class="menu-crud-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- ======================================================
+           TAB 4: OWNER EMAIL NOTIFICATIONS INBOX
+           ====================================================== -->
+      <section id="tab-emails" class="admin-view-section">
+        <div class="view-header">
+          <div class="view-title-group">
+            <h2>Owner Email Notification Center</h2>
+            <p>Every online customer order automatically triggers a rich HTML email dispatch to the cafeteria owner (<strong>owner@cafebliss.com</strong>).</p>
+          </div>
+        </div>
+
+        <div id="admin-email-logs-list" class="email-logs-list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- ======================================================
+           TAB 5: CAFÉ SETTINGS
+           ====================================================== -->
+      <section id="tab-settings" class="admin-view-section">
+        <div class="view-header">
+          <div class="view-title-group">
+            <h2>Café Business Settings</h2>
+            <p>Configure tax rate, delivery fee thresholds, notification email, and kitchen open/closed status.</p>
+          </div>
+        </div>
+
+        <div style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 28px; max-width: 680px;">
+          <form id="cafe-settings-form">
+            <div class="admin-form-group">
+              <label for="cfg-cafe-name">Café Brand Name</label>
+              <input type="text" id="cfg-cafe-name" class="admin-input" value="Café Bliss" required>
+            </div>
+
+            <div class="admin-form-group">
+              <label for="cfg-owner-email">Owner Notification Email (Receives New Orders)</label>
+              <input type="email" id="cfg-owner-email" class="admin-input" value="owner@cafebliss.com" required>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="admin-form-group">
+                <label for="cfg-tax-rate">Sales Tax Rate (%)</label>
+                <input type="number" id="cfg-tax-rate" class="admin-input" value="5.0" step="0.1" min="0">
+              </div>
+              <div class="admin-form-group">
+                <label for="cfg-delivery-fee">Base Delivery Charge ($)</label>
+                <input type="number" id="cfg-delivery-fee" class="admin-input" value="2.50" step="0.1" min="0">
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="admin-form-group">
+                <label for="cfg-free-thresh">Free Delivery Threshold ($)</label>
+                <input type="number" id="cfg-free-thresh" class="admin-input" value="30.00" step="1.0" min="0">
+              </div>
+              <div class="admin-form-group">
+                <label for="cfg-kitchen-status">Kitchen Operations Status</label>
+                <select id="cfg-kitchen-status" class="admin-select">
+                  <option value="open" selected>🟢 Open - Accepting Online Orders</option>
+                  <option value="busy">🟡 High Rush - 30m Prep Delay</option>
+                  <option value="closed">🔴 Closed - Pause Online Orders</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-admin-primary" style="margin-top: 10px;">
+              <i class="fa-solid fa-floppy-disk"></i> Save Configuration
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==========================================================
+       MODAL: ADD NEW DELICACY
+       ========================================================== -->
+  <div id="modal-add-delicacy" class="admin-modal-overlay">
+    <div class="admin-modal-dialog">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title"><i class="fa-solid fa-plus-circle" style="color: var(--accent-gold);"></i> Add New Food Item</h3>
+        <button type="button" class="admin-modal-close" onclick="AdminApp.closeModal('modal-add-delicacy')">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form id="form-add-delicacy">
+          <div class="admin-form-group">
+            <label for="add-name">Delicacy Name *</label>
+            <input type="text" id="add-name" class="admin-input" placeholder="e.g. Saffron Pistachio Latte" required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="admin-form-group">
+              <label for="add-category">Category *</label>
+              <select id="add-category" class="admin-select" required>
+                <option value="coffee">Coffee</option>
+                <option value="tea">Tea</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="burgers">Burgers</option>
+                <option value="pizza">Pizza</option>
+                <option value="sandwiches">Sandwiches</option>
+                <option value="snacks">Snacks</option>
+                <option value="fresh-juice">Fresh Juice</option>
+                <option value="desserts">Cakes & Desserts</option>
+              </select>
+            </div>
+
+            <div class="admin-form-group">
+              <label for="add-diet">Dietary Classification</label>
+              <select id="add-diet" class="admin-select">
+                <option value="1">🌱 Pure Vegetarian</option>
+                <option value="0">🍖 Non-Vegetarian</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="admin-form-group">
+              <label for="add-price">Selling Price ($) *</label>
+              <input type="number" id="add-price" class="admin-input" placeholder="6.50" step="0.01" min="0.1" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="add-orig-price">Original / Strikethrough Price ($)</label>
+              <input type="number" id="add-orig-price" class="admin-input" placeholder="7.80" step="0.01" min="0">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="admin-form-group">
+              <label for="add-badge">Promotional Badge</label>
+              <input type="text" id="add-badge" class="admin-input" placeholder="e.g. Bestseller, Chef's Choice">
+            </div>
+            <div class="admin-form-group">
+              <label for="add-prep">Preparation Time</label>
+              <input type="text" id="add-prep" class="admin-input" value="8-10 mins">
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label for="add-image">Image URL</label>
+            <input type="url" id="add-image" class="admin-input" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?auto=format&fit=crop&w=700&q=80">
+          </div>
+
+          <div class="admin-form-group">
+            <label for="add-desc">Description *</label>
+            <textarea id="add-desc" class="admin-textarea" placeholder="Delicious ingredients and sensory description..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-admin-primary" style="width: 100%; justify-content: center; padding: 13px;">
+            <i class="fa-solid fa-check"></i> Add to Active Menu
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       MODAL: EDIT DELICACY
+       ========================================================== -->
+  <div id="modal-edit-delicacy" class="admin-modal-overlay">
+    <div class="admin-modal-dialog">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title"><i class="fa-solid fa-pen-to-square" style="color: var(--accent-gold);"></i> Edit Delicacy</h3>
+        <button type="button" class="admin-modal-close" onclick="AdminApp.closeModal('modal-edit-delicacy')">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form id="form-edit-delicacy">
+          <input type="hidden" id="edit-id">
+
+          <div class="admin-form-group">
+            <label for="edit-name">Delicacy Name *</label>
+            <input type="text" id="edit-name" class="admin-input" required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="admin-form-group">
+              <label for="edit-category">Category *</label>
+              <select id="edit-category" class="admin-select" required>
+                <option value="coffee">Coffee</option>
+                <option value="tea">Tea</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="burgers">Burgers</option>
+                <option value="pizza">Pizza</option>
+                <option value="sandwiches">Sandwiches</option>
+                <option value="snacks">Snacks</option>
+                <option value="fresh-juice">Fresh Juice</option>
+                <option value="desserts">Cakes & Desserts</option>
+              </select>
+            </div>
+
+            <div class="admin-form-group">
+              <label for="edit-diet">Dietary Classification</label>
+              <select id="edit-diet" class="admin-select">
+                <option value="1">🌱 Pure Vegetarian</option>
+                <option value="0">🍖 Non-Vegetarian</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="admin-form-group">
+              <label for="edit-price">Selling Price ($) *</label>
+              <input type="number" id="edit-price" class="admin-input" step="0.01" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="edit-orig-price">Original Price ($)</label>
+              <input type="number" id="edit-orig-price" class="admin-input" step="0.01">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="admin-form-group">
+              <label for="edit-badge">Promotional Badge</label>
+              <input type="text" id="edit-badge" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label for="edit-prep">Preparation Time</label>
+              <input type="text" id="edit-prep" class="admin-input">
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label for="edit-image">Image URL</label>
+            <input type="url" id="edit-image" class="admin-input">
+          </div>
+
+          <div class="admin-form-group">
+            <label for="edit-desc">Description *</label>
+            <textarea id="edit-desc" class="admin-textarea" required></textarea>
+          </div>
+
+          <button type="submit" class="btn-admin-primary" style="width: 100%; justify-content: center; padding: 13px;">
+            <i class="fa-solid fa-floppy-disk"></i> Update Changes
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       MODAL: HTML EMAIL PREVIEW
+       ========================================================== -->
+  <div id="modal-email-preview" class="admin-modal-overlay">
+    <div class="admin-modal-dialog" style="max-width: 680px;">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title"><i class="fa-solid fa-envelope" style="color: var(--accent-gold);"></i> Owner Email Dispatch Preview</h3>
+        <button type="button" class="admin-modal-close" onclick="AdminApp.closeModal('modal-email-preview')">&times;</button>
+      </div>
+      <div class="admin-modal-body" id="email-preview-content" style="background: #faf6f0; color: #2d1810; border-radius: 8px; padding: 16px;">
+        <!-- Email HTML rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       PRINTABLE THERMAL KITCHEN ORDER TICKET (KOT)
+       ========================================================== -->
+  <div id="kot-print-area" style="display: none;">
+    <div style="text-align: center; border-bottom: 2px dashed #000; padding-bottom: 8px; margin-bottom: 10px;">
+      <h2 style="margin: 0; font-size: 18px;">CAFÉ BLISS - KITCHEN TICKET</h2>
+      <p style="margin: 2px 0 0 0; font-size: 12px;" id="kot-timestamp">Date & Time</p>
+      <h3 style="margin: 6px 0 0 0; font-size: 20px;" id="kot-order-id">#BLISS-000000</h3>
+      <p style="margin: 2px 0 0 0; font-weight: bold; font-size: 14px;" id="kot-type">ORDER TYPE</p>
+    </div>
+
+    <div style="border-bottom: 1px solid #000; padding-bottom: 8px; margin-bottom: 8px; font-size: 12px;">
+      <div>Customer: <strong id="kot-customer-name">Name</strong></div>
+      <div>Contact: <strong id="kot-customer-phone">Phone</strong></div>
+      <div id="kot-customer-dest">Destination</div>
+    </div>
+
+    <div style="border-bottom: 2px dashed #000; padding-bottom: 8px; margin-bottom: 8px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr style="text-align: left; border-bottom: 1px solid #000;">
+            <th>QTY</th>
+            <th>ITEM</th>
+          </tr>
+        </thead>
+        <tbody id="kot-items-table">
+          <!-- Populated -->
+        </tbody>
+      </table>
+    </div>
+
+    <div style="font-size: 12px; margin-bottom: 8px;" id="kot-notes-wrap">
+      Notes: <em id="kot-notes">None</em>
+    </div>
+
+    <div style="text-align: center; font-size: 11px; margin-top: 10px; border-top: 1px solid #000; padding-top: 6px;">
+      *** FAST & FRESH CHEF COPY ***
+    </div>
+  </div>
+  </div>
+
   <script src="js/data.js"></script>
   <script src="js/a11y.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>

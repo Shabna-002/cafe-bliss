@@ -50,7 +50,8 @@
   box-sizing: border-box;
 }
 
-body.admin-body {
+body.admin-body,
+.admin-view-wrapper {
   font-family: var(--font-sans);
   background-color: var(--admin-bg);
   color: var(--text-main);
@@ -58,6 +59,14 @@ body.admin-body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+}
+
+.admin-view-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: none;
+  overflow-y: auto;
 }
 
 /* ==========================================================================
