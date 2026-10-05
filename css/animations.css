@@ -1,0 +1,190 @@
+/* ==========================================================
+   Café Bliss - Smooth Animations & Transitions System
+   ========================================================== */
+
+/* --- KEYFRAME DEFINITIONS --- */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(-1.5deg);
+  }
+}
+
+@keyframes steamRise {
+  0% {
+    opacity: 0.3;
+    transform: translateY(0) scaleX(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-8px) scaleX(1.15);
+  }
+  100% {
+    opacity: 0.3;
+    transform: translateY(-16px) scaleX(1.3);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(194, 120, 53, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(194, 120, 53, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0.6);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+/* --- ANIMATION UTILITY CLASSES --- */
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatReverse 4.5s ease-in-out infinite;
+}
+
+.animate-steam {
+  animation: steamRise 2.5s ease-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s infinite;
+}
+
+.badge-pop {
+  animation: badgePop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Scroll Triggered Entrance Animations */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.animate-on-scroll.fade-in-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Delay Helpers */
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+
+/* Subtle Parallax Background Tilt Effect */
+.parallax-layer {
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+/* ==========================================================
+   REDUCED-MOTION MODE (Accessibility & Performance)
+   ========================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-float,
+  .animate-float-reverse,
+  .animate-steam,
+  .animate-pulse-glow,
+  .animate-on-scroll,
+  .hero-main-img-box:hover .hero-main-img,
+  .food-card:hover,
+  .offer-card:hover {
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+/* Class-based Reduced Motion (Triggered via A11y Panel) */
+html.reduced-motion *,
+html.reduced-motion *::before,
+html.reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+html.reduced-motion .animate-float,
+html.reduced-motion .animate-float-reverse,
+html.reduced-motion .animate-steam,
+html.reduced-motion .animate-pulse-glow,
+html.reduced-motion .animate-on-scroll,
+html.reduced-motion .hero-main-img-box:hover .hero-main-img,
+html.reduced-motion .food-card:hover,
+html.reduced-motion .offer-card:hover {
+  transform: none !important;
+  animation: none !important;
+}

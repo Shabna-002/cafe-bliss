@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Café Bliss – Fresh Taste, Happy Moments. Modern artisan cafeteria serving specialty single-origin coffees, gourmet wood-fired pizza, gourmet burgers, fresh pastries, and comforting delicacies.">
+  <meta name="keywords" content="cafeteria, cafe bliss, specialty coffee, gourmet burgers, artisan pizza, breakfast, pastries, online food order, table reservation">
+  <meta name="theme-color" content="#c27835">
+
+  <title>Café Bliss – Fresh Taste, Happy Moments</title>
+
+  <!-- Google Fonts: Outfit (modern UI) & Playfair Display (luxury editorial serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 Free CDN for Modern Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ==========================================================
+       PRELOADER ANIMATION
+       ========================================================== -->
+  <div id="preloader" aria-hidden="true">
+    <div class="loader-cup">
+      <i class="fa-solid fa-mug-hot"></i>
+    </div>
+    <div class="loader-text">Café Bliss</div>
+    <p style="color: #a8988d; font-size: 0.85rem; margin-top: 6px;">Brewing fresh moments...</p>
+  </div>
+
+  <!-- ==========================================================
+       STICKY NAVBAR
+       ========================================================== -->
+  <header class="navbar-wrapper" id="main-navbar">
+    <div class="container navbar">
+      <!-- Logo -->
+      <a href="#home" class="brand-logo" aria-label="Café Bliss Home">
+        <div class="brand-icon-wrap">
+          <i class="fa-solid fa-mug-saucer"></i>
+        </div>
+        <div class="brand-text-wrap">
+          <span class="brand-title">Café <span>Bliss</span></span>
+          <span class="brand-tagline">Fresh Taste • Happy Moments</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="nav-links-menu" aria-label="Primary Navigation">
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#menu" class="nav-link">Menu</a>
+        <a href="#offers" class="nav-link">Offers</a>
+        <a href="#about" class="nav-link">About Us</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#reservation" class="nav-link">Reserve Table</a>
+        <a href="#reviews" class="nav-link">Reviews</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <!-- Nav Action Buttons -->
+      <div class="nav-actions">
+        <!-- Live Track Order Shortcut -->
+        <button type="button" class="icon-btn" id="track-order-nav-btn" title="Track Your Order" aria-label="Track Your Order">
+          <i class="fa-solid fa-route"></i>
+        </button>
+
+        <!-- Wishlist Button -->
+        <button type="button" class="icon-btn" id="navbar-wishlist-btn" title="View Wishlist / Favorites" aria-label="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          <span class="badge-count wishlist-count-badge" style="display: none;">0</span>
+        </button>
+
+        <!-- Cart Button -->
+        <button type="button" class="icon-btn" id="navbar-cart-btn" title="View Cart & Orders" aria-label="Shopping Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="badge-count cart-count-badge" style="display: none;">0</span>
+        </button>
+
+        <!-- Theme Toggle (Dark / Light) -->
+        <button type="button" class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Accessibility Options Button -->
+        <button type="button" class="icon-btn" id="a11y-trigger-btn" title="Accessibility & Display Settings" aria-label="Accessibility settings">
+          <i class="fa-solid fa-universal-access"></i>
+        </button>
+
+        <!-- Auth Button -->
+        <button type="button" class="btn-nav-auth" id="nav-auth-btn" aria-label="User Account">
+          <i class="fa-regular fa-user"></i>
+          <span>Login / Sign Up</span>
+        </button>
+
+        <!-- Mobile Hamburger Toggle -->
+        <button type="button" class="hamburger-btn" id="nav-hamburger-btn" aria-label="Open mobile navigation menu" aria-expanded="false">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================
+       MOBILE NAVIGATION DRAWER
+       ========================================================== -->
+  <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+  <aside class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation Menu">
+    <div class="mobile-nav-header">
+      <div class="brand-logo">
+        <div class="brand-icon-wrap" style="width: 40px; height: 40px; font-size: 1.1rem;">
+          <i class="fa-solid fa-mug-saucer"></i>
+        </div>
+        <span class="brand-title" style="font-size: 1.3rem;">Café <span>Bliss</span></span>
+      </div>
+      <button type="button" class="icon-btn" id="close-mobile-nav" aria-label="Close mobile navigation">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+
+    <div class="mobile-nav-links">
+      <a href="#home" class="mobile-nav-link active"><i class="fa-solid fa-house"></i> Home</a>
+      <a href="#menu" class="mobile-nav-link"><i class="fa-solid fa-utensils"></i> Full Menu</a>
+      <a href="#offers" class="mobile-nav-link"><i class="fa-solid fa-tags"></i> Special Offers</a>
+      <a href="#about" class="mobile-nav-link"><i class="fa-solid fa-heart"></i> About Our Café</a>
+      <a href="#gallery" class="mobile-nav-link"><i class="fa-solid fa-images"></i> Photo Gallery</a>
+      <a href="#reservation" class="mobile-nav-link"><i class="fa-solid fa-calendar-check"></i> Book Table</a>
+      <a href="#reviews" class="mobile-nav-link"><i class="fa-solid fa-star"></i> Reviews</a>
+      <a href="#contact" class="mobile-nav-link"><i class="fa-solid fa-map-location-dot"></i> Contact & Hours</a>
+    </div>
+
+    <div class="mobile-nav-footer">
+      <button type="button" class="btn btn-primary" onclick="CartEngine.openDrawer()" style="width: 100%;">
+        <i class="fa-solid fa-bag-shopping"></i> View Cart & Checkout
+      </button>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button type="button" class="btn btn-secondary theme-toggle-btn" style="flex: 1; padding: 10px;">
+          <i class="fa-solid fa-moon"></i> Theme
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('a11y-modal').classList.add('active')" style="flex: 1; padding: 10px;">
+          <i class="fa-solid fa-universal-access"></i> A11y
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==========================================================
+       HERO SECTION
+       ========================================================== -->
+  <section class="hero-section" id="home">
+    <div class="hero-bg-blobs">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+    </div>
+
+    <div class="container hero-grid">
+      <!-- Left Content -->
+      <div class="hero-content animate-on-scroll">
+        <div class="hero-pill-badge">
+          <i class="fa-solid fa-fire-flame-curved steam-icon animate-steam"></i>
+          <span>Handcrafted Artisan Coffee & Gourmet Comfort</span>
+        </div>
+
+        <h1 class="hero-heading">
+          Fresh Food. <br>
+          Great Coffee. <br>
+          <span class="highlight">Good Moments.</span>
+        </h1>
+
+        <p class="hero-desc">
+          Step into Café Bliss, your warm urban sanctuary. From single-origin espresso and organic teas to wood-fired artisan pizzas and golden flaky morning pastries, every bite is crafted to spark joy.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#menu" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-utensils"></i> Explore Menu
+          </a>
+          <button type="button" class="btn btn-secondary btn-lg" onclick="CartEngine.openDrawer()">
+            <i class="fa-solid fa-bag-shopping"></i> Order Now
+          </button>
+          <a href="#reservation" class="btn btn-glass btn-lg">
+            <i class="fa-regular fa-calendar-check"></i> Reserve Table
+          </a>
+        </div>
+
+        <div class="hero-highlights">
+          <div class="highlight-item">
+            <i class="fa-solid fa-seedling"></i>
+            <span>100% Organic Arabica</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Hygienic Open Kitchen</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fa-solid fa-bolt"></i>
+            <span>15-Min Quick Pickup</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Media Graphic with Floating Glass Badges -->
+      <div class="hero-media-wrap animate-on-scroll delay-200">
+        <div class="hero-main-img-box">
+          <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=900&q=80" alt="Warm Cozy Café Bliss Interior with Coffee Bar" class="hero-main-img">
+        </div>
+
+        <!-- Floating Badge 1: 4.9 Rating -->
+        <div class="hero-float-card glass-card float-rating animate-float">
+          <div class="float-icon">
+            <i class="fa-solid fa-star" style="color: var(--color-star);"></i>
+          </div>
+          <div class="float-text">
+            <h5>4.9 / 5 Rating</h5>
+            <p>2,400+ Happy Foodies</p>
+          </div>
+        </div>
+
+        <!-- Floating Badge 2: Quick Pickup -->
+        <div class="hero-float-card glass-card float-speed animate-float-reverse">
+          <div class="float-icon">
+            <i class="fa-solid fa-clock" style="color: var(--primary);"></i>
+          </div>
+          <div class="float-text">
+            <h5>Fresh & Hot in 15m</h5>
+            <p>Dine-in, Takeaway & Delivery</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Stats Bar -->
+    <div class="container">
+      <div class="hero-stats-row animate-on-scroll delay-300" id="hero-stats-row">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       FEATURED CATEGORIES QUICK BAR
+       ========================================================== -->
+  <section class="featured-cat-section">
+    <div class="container">
+      <div class="cat-carousel-grid">
+        <div class="cat-quick-card" onclick="document.querySelector('[data-category=coffee]').click(); document.getElementById('menu').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-quick-icon"><i class="fa-solid fa-mug-hot"></i></div>
+          <span class="cat-quick-name">Artisan Coffee</span>
+        </div>
+        <div class="cat-quick-card" onclick="document.querySelector('[data-category=burgers]').click(); document.getElementById('menu').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-quick-icon"><i class="fa-solid fa-burger"></i></div>
+          <span class="cat-quick-name">Gourmet Burgers</span>
+        </div>
+        <div class="cat-quick-card" onclick="document.querySelector('[data-category=pizza]').click(); document.getElementById('menu').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-quick-icon"><i class="fa-solid fa-pizza-slice"></i></div>
+          <span class="cat-quick-name">Wood-Fired Pizza</span>
+        </div>
+        <div class="cat-quick-card" onclick="document.querySelector('[data-category=sandwiches]').click(); document.getElementById('menu').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-quick-icon"><i class="fa-solid fa-bread-slice"></i></div>
+          <span class="cat-quick-name">Paninis & Clubs</span>
+        </div>
+        <div class="cat-quick-card" onclick="document.querySelector('[data-category=desserts]').click(); document.getElementById('menu').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-quick-icon"><i class="fa-solid fa-cake-candles"></i></div>
+          <span class="cat-quick-name">Cakes & Desserts</span>
+        </div>
+        <div class="cat-quick-card" onclick="document.querySelector('[data-category=fresh-juice]').click(); document.getElementById('menu').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-quick-icon"><i class="fa-solid fa-glass-water"></i></div>
+          <span class="cat-quick-name">Raw Fresh Juices</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       MENU SECTION
+       ========================================================== -->
+  <section class="section-padding menu-section" id="menu">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-tag"><i class="fa-solid fa-spoon"></i> Handcrafted Daily</span>
+        <h2 class="section-title">Explore Our <span>Signature Menu</span></h2>
+        <p class="section-subtitle">
+          From sunrise espresso roasts and wholesome brunch plates to decadent evening treats, browse our chef-crafted selections prepared with pure passion.
+        </p>
+      </div>
+
+      <!-- Menu Controls (Search, Diet Filters, Sort, Categories) -->
+      <div class="menu-controls-wrapper animate-on-scroll delay-100">
+        <!-- Search & Filter Options Row -->
+        <div class="menu-search-filter-row">
+          <!-- Live Instant Search -->
+          <div class="menu-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="menu-search-input" class="menu-search-input" placeholder="Search coffee, burgers, pizza, ingredients..." aria-label="Search menu items">
+          </div>
+
+          <!-- Diet & Sort Actions -->
+          <div class="menu-filter-actions">
+            <!-- Dietary Filter Group -->
+            <div class="diet-filters-group" role="group" aria-label="Filter by dietary preference">
+              <button type="button" class="diet-filter-btn active" data-diet="all">All</button>
+              <button type="button" class="diet-filter-btn" data-diet="veg">
+                <span class="diet-dot veg"></span> Veg Only
+              </button>
+              <button type="button" class="diet-filter-btn" data-diet="non-veg">
+                <span class="diet-dot non-veg"></span> Non-Veg
+              </button>
+            </div>
+
+            <!-- Sort By Select -->
+            <div class="sort-select-wrapper">
+              <select id="menu-sort-select" class="sort-select" aria-label="Sort menu items">
+                <option value="featured">Featured Favorites</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+              </select>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="menu-cat-tabs-container" id="menu-category-tabs" role="tablist" aria-label="Menu categories">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="menu-results-count" id="menu-results-count">
+          Showing all delicacies...
+        </div>
+      </div>
+
+      <!-- Menu Items Grid -->
+      <div class="menu-grid" id="menu-items-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       SPECIAL OFFERS & PROMOTIONS SECTION
+       ========================================================== -->
+  <section class="section-padding offers-section" id="offers">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-tag"><i class="fa-solid fa-tag"></i> Limited Time Perks</span>
+        <h2 class="section-title">Special Offers & <span>Exclusive Combos</span></h2>
+        <p class="section-subtitle">
+          Treat yourself and your companions to our curated special deals, student discounts, and limited-hour promotions.
+        </p>
+      </div>
+
+      <!-- Live Countdown Banner -->
+      <div class="countdown-banner animate-on-scroll delay-100">
+        <div class="countdown-info">
+          <div class="countdown-icon">
+            <i class="fa-solid fa-hourglass-half"></i>
+          </div>
+          <div class="countdown-title-wrap">
+            <h3>⚡ Happy Hour Flash Deals End Soon!</h3>
+            <p>Use code <strong>BLISS20</strong> for 20% off all orders above $20. Valid today only.</p>
+          </div>
+        </div>
+
+        <div class="countdown-timer-boxes" aria-label="Flash offer countdown timer">
+          <div class="time-box">
+            <span class="time-val" id="countdown-hours">06</span>
+            <span class="time-lbl">Hours</span>
+          </div>
+          <span class="time-colon">:</span>
+          <div class="time-box">
+            <span class="time-val" id="countdown-minutes">42</span>
+            <span class="time-lbl">Mins</span>
+          </div>
+          <span class="time-colon">:</span>
+          <div class="time-box">
+            <span class="time-val" id="countdown-seconds">15</span>
+            <span class="time-lbl">Secs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offers Cards Grid -->
+      <div class="offers-grid animate-on-scroll delay-200" id="offers-cards-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       ABOUT US SECTION
+       ========================================================== -->
+  <section class="section-padding about-section" id="about">
+    <div class="container about-grid">
+      <!-- Left Photo Collage -->
+      <div class="about-images-collage animate-on-scroll">
+        <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80" alt="Barista preparing artisan drip coffee" class="about-img-main">
+        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80" alt="Cozy sunlit interior of Café Bliss" class="about-img-secondary">
+        <div class="about-experience-badge">
+          <span class="exp-years">8+</span>
+          <span class="exp-text">Years of Roasting Mastery</span>
+        </div>
+      </div>
+
+      <!-- Right Narrative Content -->
+      <div class="about-content animate-on-scroll delay-200">
+        <span class="section-tag"><i class="fa-solid fa-mug-saucer"></i> Our Coffee Philosophy</span>
+        <h2 class="section-title">Where Every Cup Tells A <span>Heartfelt Story</span></h2>
+        <p>
+          Founded in 2018 by passionate roast masters and culinary dreamers, Café Bliss began as an intimate neighborhood espresso corner with one humble mission: to serve authentic, unhurried food and coffee that brightens everyday life.
+        </p>
+        <p>
+          Today, we source ethical, 100% Arabica beans directly from certified organic family plantations in Ethiopia, Colombia, and Guatemala. Our in-house bakery kneads slow-fermented sourdough, flaky butter croissants, and seasonal pastries fresh every morning before dawn.
+        </p>
+
+        <!-- 4 Pillars Grid -->
+        <div class="about-pillars-grid">
+          <div class="pillar-card">
+            <div class="pillar-icon"><i class="fa-solid fa-leaf"></i></div>
+            <div class="pillar-info">
+              <h4>Farm-to-Cup Fresh</h4>
+              <p>Locally sourced pasture milk and single-origin coffee beans.</p>
+            </div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon"><i class="fa-solid fa-hand-sparkles"></i></div>
+            <div class="pillar-info">
+              <h4>Hygienic Open Kitchen</h4>
+              <p>Certified spotless preparation with live visibility for guests.</p>
+            </div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon"><i class="fa-solid fa-wheat-awn"></i></div>
+            <div class="pillar-info">
+              <h4>Artisanal Baking</h4>
+              <p>Real butter, no artificial chemicals or synthetic food colorings.</p>
+            </div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon"><i class="fa-solid fa-face-smile"></i></div>
+            <div class="pillar-info">
+              <h4>Warm Hospitality</h4>
+              <p>Friendly baristas who welcome you with a genuine smile.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <a href="#reservation" class="btn btn-primary">
+            <i class="fa-solid fa-calendar-check"></i> Reserve A Table
+          </a>
+          <a href="#contact" class="btn btn-secondary">
+            <i class="fa-solid fa-compass"></i> Visit Our Café
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       IMAGE GALLERY SECTION WITH LIGHTBOX
+       ========================================================== -->
+  <section class="section-padding gallery-section" id="gallery">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-tag"><i class="fa-solid fa-camera"></i> Visual Journey</span>
+        <h2 class="section-title">Moments Captured In <span>Warm Light</span></h2>
+        <p class="section-subtitle">
+          Take a peek into our warm ambiance, delicate latte art, smiling faces, and mouthwatering culinary creations.
+        </p>
+      </div>
+
+      <!-- Gallery Filter Tabs -->
+      <div class="gallery-tabs-bar animate-on-scroll delay-100" id="gallery-category-tabs">
+        <button type="button" class="gallery-cat-btn active" data-category="all">All Photos</button>
+        <button type="button" class="gallery-cat-btn" data-category="coffee">Coffee Craft</button>
+        <button type="button" class="gallery-cat-btn" data-category="food">Artisan Food</button>
+        <button type="button" class="gallery-cat-btn" data-category="interior">Café Interior</button>
+        <button type="button" class="gallery-cat-btn" data-category="desserts">Patisserie</button>
+        <button type="button" class="gallery-cat-btn" data-category="customers">Vibes & Smiles</button>
+        <button type="button" class="gallery-cat-btn" data-category="kitchen">Our Kitchen</button>
+      </div>
+
+      <!-- Gallery Images Grid -->
+      <div class="gallery-grid animate-on-scroll delay-200" id="gallery-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       TABLE RESERVATION SECTION
+       ========================================================== -->
+  <section class="section-padding reservation-section" id="reservation">
+    <div class="container reservation-grid">
+      <!-- Left Info Box -->
+      <div class="res-info-card animate-on-scroll">
+        <span class="section-tag" style="background: rgba(217,130,63,0.25); color: var(--accent-gold); border: 1px solid rgba(217,130,63,0.4);">
+          <i class="fa-solid fa-chair"></i> Intimate & Group Seating
+        </span>
+        <h3>Reserve Your <span>Cozy Table</span></h3>
+        <p>
+          Whether you're planning a romantic coffee date, an energetic brunch with friends, or a quiet laptop work session, we'll keep the perfect spot waiting for you.
+        </p>
+
+        <div class="res-perks-list">
+          <div class="res-perk-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>No reservation fee or minimum spend required</span>
+          </div>
+          <div class="res-perk-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Instant booking confirmation via Reference ID</span>
+          </div>
+          <div class="res-perk-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Choice of indoor booth, sunny window, or garden patio</span>
+          </div>
+          <div class="res-perk-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Complimentary custom greeting card for special occasions</span>
+          </div>
+        </div>
+
+        <div class="res-phone-banner">
+          <i class="fa-solid fa-headset"></i>
+          <div class="res-phone-text">
+            <h5>Prefer booking over a quick call?</h5>
+            <a href="tel:+15552345678">+1 (555) 234-5678</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Form Box -->
+      <div class="reservation-form-box glass-card animate-on-scroll delay-200">
+        <h3 style="font-size: 1.6rem; margin-bottom: 24px;">Book A Table Online</h3>
+        
+        <form id="reservation-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="res-name">Full Name *</label>
+              <input type="text" id="res-name" class="form-input" placeholder="e.g. Eleanor Vance" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="res-phone">Phone Number *</label>
+              <input type="tel" id="res-phone" class="form-input" placeholder="+1 (555) 000-0000" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="res-email">Email Address</label>
+              <input type="email" id="res-email" class="form-input" placeholder="eleanor@example.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="res-guests">Number of Guests *</label>
+              <select id="res-guests" class="form-select" required>
+                <option value="1">1 Person (Solo Work & Sip)</option>
+                <option value="2" selected>2 People (Cozy Table for Two)</option>
+                <option value="3">3 People</option>
+                <option value="4">4 People (Family / Bistro)</option>
+                <option value="5">5 People</option>
+                <option value="6">6 - 8 People (Large Group Table)</option>
+                <option value="10">9 - 12 People (Private Lounge Area)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="res-date">Reservation Date *</label>
+              <input type="date" id="res-date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="res-time">Preferred Time Slot *</label>
+              <select id="res-time" class="form-select" required>
+                <option value="08:30 AM">08:30 AM (Morning Brew & Croissant)</option>
+                <option value="10:00 AM">10:00 AM (Brunch Hours)</option>
+                <option value="12:30 PM">12:30 PM (Midday Bistro Lunch)</option>
+                <option value="02:00 PM">02:00 PM (Afternoon Coffee)</option>
+                <option value="04:30 PM">04:30 PM (Sunset High Tea)</option>
+                <option value="06:30 PM">06:30 PM (Evening Dinner & Wine)</option>
+                <option value="08:00 PM">08:00 PM (Cozy Late Dinner)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="res-seating">Seating Preference</label>
+            <select id="res-seating" class="form-select">
+              <option value="Indoor Cozy Booth">Indoor Cozy Booth (Plush velvet & jazz music)</option>
+              <option value="Sunlit Window View">Sunlit Window View (Great natural light & street view)</option>
+              <option value="Garden Terrace Patio">Garden Terrace Patio (Fresh air & fairy lights)</option>
+              <option value="Barista Counter">Barista Counter (Direct espresso craft view)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="res-notes">Special Requests / Occasion</label>
+            <textarea id="res-notes" class="form-textarea" placeholder="Birthday, anniversary, high chair needed, dietary allergies, quiet corner..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.05rem;">
+            <i class="fa-solid fa-circle-check"></i> Reserve Table Now
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       CUSTOMER REVIEWS & TESTIMONIALS SECTION
+       ========================================================== -->
+  <section class="section-padding reviews-section" id="reviews">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-tag"><i class="fa-solid fa-heart"></i> Warm Words</span>
+        <h2 class="section-title">Loved by <span>Coffee Lovers</span></h2>
+        <p class="section-subtitle">
+          Read genuine impressions from food bloggers, busy professionals, students, and regular café patrons who call Café Bliss their second home.
+        </p>
+      </div>
+
+      <!-- Testimonials Slider Wrapper -->
+      <div class="reviews-carousel-wrapper animate-on-scroll delay-100">
+        <!-- Prev / Next Arrow Buttons -->
+        <button type="button" class="review-nav-arrow review-prev" id="review-prev-btn" aria-label="Previous customer review">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button type="button" class="review-nav-arrow review-next" id="review-next-btn" aria-label="Next customer review">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- Slider Track -->
+        <div class="reviews-slider-track" id="reviews-slider-track">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Slider Dots -->
+        <div class="reviews-slider-dots" id="reviews-slider-dots" role="tablist">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Write a Review CTA -->
+      <div class="review-actions-row animate-on-scroll delay-200">
+        <button type="button" class="btn btn-secondary" id="open-write-review-btn">
+          <i class="fa-solid fa-pen-nib"></i> Share Your Experience & Write A Review
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       CONTACT & MAP SECTION
+       ========================================================== -->
+  <section class="section-padding contact-section" id="contact">
+    <div class="container contact-grid">
+      <!-- Left Column: Details & Map -->
+      <div class="contact-info-column animate-on-scroll">
+        <span class="section-tag"><i class="fa-solid fa-location-dot"></i> Welcome To Our Haven</span>
+        <h2 class="section-title">Visit Us Or <span>Say Hello</span></h2>
+        <p>
+          Drop by anytime for fresh coffee aromas and peaceful atmosphere. We are conveniently situated in the heart of the Coffee Quarter with ample validated parking.
+        </p>
+
+        <div class="contact-cards-list">
+          <div class="contact-info-card glass-card">
+            <div class="contact-card-icon"><i class="fa-solid fa-map-pin"></i></div>
+            <div class="contact-card-details">
+              <h4>Café Bliss Location</h4>
+              <p>42 Artisan Boulevard, Coffee Quarter, Metro City, NY 10001</p>
+            </div>
+          </div>
+
+          <div class="contact-info-card glass-card">
+            <div class="contact-card-icon"><i class="fa-solid fa-clock"></i></div>
+            <div class="contact-card-details">
+              <h4>Operating Hours</h4>
+              <p>Mon - Fri: 7:00 AM – 10:30 PM <br> Sat - Sun: 7:30 AM – 11:30 PM</p>
+            </div>
+          </div>
+
+          <div class="contact-info-card glass-card">
+            <div class="contact-card-icon"><i class="fa-solid fa-phone"></i></div>
+            <div class="contact-card-details">
+              <h4>Phone & WhatsApp</h4>
+              <p><a href="tel:+15552345678">+1 (555) 234-5678</a> • <a href="mailto:hello@cafebliss.com">hello@cafebliss.com</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Google Maps Stylized Preview -->
+        <div class="contact-map-mock">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.25280006546!2d-74.14448773950268!3d40.6976312333306!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1680000000000!5m2!1sen!2sus" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade" 
+            title="Café Bliss Google Map Location">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Right Column: Contact Inquiry Form -->
+      <div class="contact-form-box glass-card animate-on-scroll delay-200">
+        <h3 style="font-size: 1.6rem; margin-bottom: 20px;">Send Us A Direct Message</h3>
+        <p style="margin-bottom: 24px;">Have questions about our catering, private events, or dietary preparations? Our concierge responds promptly.</p>
+
+        <form id="contact-form">
+          <div class="form-group">
+            <label class="form-label" for="contact-name">Your Name *</label>
+            <input type="text" id="contact-name" class="form-input" placeholder="e.g. Alexander Cole" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-email">Email Address *</label>
+            <input type="email" id="contact-email" class="form-input" placeholder="alexander@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-subject">Topic / Subject</label>
+            <select id="contact-subject" class="form-select">
+              <option value="General Inquiry">General Question / Feedback</option>
+              <option value="Event Booking">Private Event / Birthday Catering</option>
+              <option value="Allergy Information">Dietary & Allergy Details</option>
+              <option value="Partnership">Wholesale Coffee & Bean Supply</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-message">Your Message *</label>
+            <textarea id="contact-message" class="form-textarea" placeholder="Tell us how we can make your Café Bliss experience extraordinary..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">
+            <i class="fa-solid fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       PREMIUM FOOTER
+       ========================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <!-- Newsletter Banner -->
+      <div class="footer-newsletter-banner">
+        <div class="newsletter-text">
+          <h3>Join The Café Bliss Circle</h3>
+          <p>Receive weekly coffee brewing tips, secret chef recipes, and an instant 20% off coupon!</p>
+        </div>
+        <form class="newsletter-form" id="newsletter-form">
+          <input type="email" id="newsletter-email" class="newsletter-input" placeholder="Enter your email address..." required aria-label="Email address for newsletter">
+          <button type="submit" class="btn btn-secondary">
+            <i class="fa-solid fa-envelope-open-text"></i> Subscribe
+          </button>
+        </form>
+      </div>
+
+      <!-- Footer Columns -->
+      <div class="footer-grid">
+        <!-- Brand Summary -->
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <div class="brand-icon-wrap">
+              <i class="fa-solid fa-mug-saucer"></i>
+            </div>
+            <div class="brand-text-wrap">
+              <span class="brand-title" style="color: #ffffff;">Café <span style="color: var(--accent-gold);">Bliss</span></span>
+              <span class="brand-tagline" style="color: #c7b6a9;">Fresh Taste • Happy Moments</span>
+            </div>
+          </div>
+          <p>
+            An artisan culinary sanctuary crafted with passion for coffee connoisseurs, gourmet foodies, and friendly conversations.
+          </p>
+          <div class="footer-social-links">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-link-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-link-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-link-btn" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+            <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" class="social-link-btn" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Quick Explore</h4>
+          <div class="footer-links-list">
+            <a href="#home"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Home</a>
+            <a href="#menu"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Chef Menu</a>
+            <a href="#offers"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Special Deals</a>
+            <a href="#about"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Our Story</a>
+            <a href="#gallery"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Image Gallery</a>
+            <a href="#reservation"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Reserve Table</a>
+          </div>
+        </div>
+
+        <!-- Menu Shortcuts -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Favorite Bites</h4>
+          <div class="footer-links-list">
+            <a href="#menu" onclick="document.querySelector('[data-category=coffee]').click();"><i class="fa-solid fa-mug-hot" style="font-size: 0.75rem;"></i> Signature Espresso</a>
+            <a href="#menu" onclick="document.querySelector('[data-category=breakfast]').click();"><i class="fa-solid fa-egg" style="font-size: 0.75rem;"></i> Sourdough Avocado</a>
+            <a href="#menu" onclick="document.querySelector('[data-category=burgers]').click();"><i class="fa-solid fa-burger" style="font-size: 0.75rem;"></i> Angus Truffle Burger</a>
+            <a href="#menu" onclick="document.querySelector('[data-category=pizza]').click();"><i class="fa-solid fa-pizza-slice" style="font-size: 0.75rem;"></i> Burrata Margherita</a>
+            <a href="#menu" onclick="document.querySelector('[data-category=desserts]').click();"><i class="fa-solid fa-cake-candles" style="font-size: 0.75rem;"></i> Molten Choco Lava</a>
+          </div>
+        </div>
+
+        <!-- Operating Hours & Contact -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Café Hours</h4>
+          <div class="footer-hours-list">
+            <div class="hours-row">
+              <span>Monday - Friday</span>
+              <span>7:00 AM – 10:30 PM</span>
+            </div>
+            <div class="hours-row">
+              <span>Saturday - Sunday</span>
+              <span>7:30 AM – 11:30 PM</span>
+            </div>
+            <div class="hours-row">
+              <span>Kitchen Last Call</span>
+              <span>9:45 PM Daily</span>
+            </div>
+            <p style="font-size: 0.85rem; color: #a8988d; margin-top: 12px;">
+              <i class="fa-solid fa-phone"></i> +1 (555) 234-5678 <br>
+              <i class="fa-solid fa-envelope"></i> hello@cafebliss.com
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom-bar">
+        <p>&copy; 2026 Café Bliss. All rights reserved. Crafted with fresh taste & warm moments.</p>
+        <div style="display: flex; gap: 20px;">
+          <a href="#" onclick="alert('Café Bliss is committed to 100% fair trade Arabica beans, biodegradable packaging, and sanitization standards.'); return false;">Sustainability Pledge</a>
+          <a href="#" onclick="document.getElementById('a11y-modal').classList.add('active'); return false;">Accessibility Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================
+       CART SLIDE-OVER DRAWER
+       ========================================================== -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Your Shopping Cart">
+    <div class="cart-header">
+      <h3>
+        <i class="fa-solid fa-bag-shopping" style="color: var(--primary);"></i>
+        Your Order
+      </h3>
+      <button type="button" class="icon-btn" id="close-cart-drawer" aria-label="Close cart drawer">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Cart Item List -->
+    <div class="cart-items-list" id="cart-items-list">
+      <!-- Rendered by JS -->
+    </div>
+
+    <!-- Empty State -->
+    <div class="cart-empty-state" id="cart-empty-state">
+      <i class="fa-solid fa-mug-saucer fa-4x"></i>
+      <h4>Your Tray is Empty</h4>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
+        Add warm coffee, fresh pastries, or gourmet bites from our menu!
+      </p>
+      <button type="button" class="btn btn-primary btn-sm" onclick="CartEngine.closeDrawer(); document.getElementById('menu').scrollIntoView({behavior:'smooth'});">
+        <i class="fa-solid fa-utensils"></i> Browse Menu
+      </button>
+    </div>
+
+    <!-- Cart Footer & Calculation Summary -->
+    <div class="cart-footer-summary" id="cart-footer-summary" style="display: none;">
+      <!-- Coupon Code Input -->
+      <div class="cart-coupon-box">
+        <form id="cart-coupon-form" class="coupon-input-group">
+          <input type="text" id="coupon-code-input" placeholder="Promo code (e.g. BLISS20)" aria-label="Coupon code input">
+          <button type="submit" class="btn btn-secondary btn-sm">Apply</button>
+        </form>
+        <div id="applied-coupon-tag" class="applied-coupon-tag" style="display: none;"></div>
+      </div>
+
+      <!-- Calculation Lines -->
+      <div class="cart-summary-line">
+        <span>Subtotal</span>
+        <span id="cart-subtotal">$0.00</span>
+      </div>
+      <div class="cart-summary-line" id="cart-discount-row" style="display: none; color: var(--color-veg);">
+        <span>Discount</span>
+        <span id="cart-discount">-$0.00</span>
+      </div>
+      <div class="cart-summary-line">
+        <span>Café Tax (5%)</span>
+        <span id="cart-tax">$0.00</span>
+      </div>
+      <div class="cart-summary-line">
+        <span>Delivery Fee</span>
+        <span id="cart-delivery">$0.00</span>
+      </div>
+      <div class="cart-grand-total-line">
+        <span>Grand Total</span>
+        <span id="cart-grand-total">$0.00</span>
+      </div>
+
+      <button type="button" class="btn btn-primary" id="open-checkout-btn" style="width: 100%; padding: 14px; font-size: 1.05rem;">
+        <i class="fa-solid fa-lock"></i> Proceed To Checkout
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==========================================================
+       CHECKOUT MODAL
+       ========================================================== -->
+  <div class="modal" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="checkout-title"><i class="fa-solid fa-receipt" style="color: var(--primary);"></i> Complete Your Order</h3>
+        <button type="button" class="modal-close" id="close-checkout-modal" aria-label="Close checkout modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Order Type Buttons -->
+        <label class="form-label" style="margin-bottom: 8px;">Select Order Type:</label>
+        <div class="checkout-order-types">
+          <button type="button" class="order-type-btn active" data-type="delivery">
+            <i class="fa-solid fa-truck-fast fa-lg"></i>
+            <span>Doorstep Delivery</span>
+          </button>
+          <button type="button" class="order-type-btn" data-type="pickup">
+            <i class="fa-solid fa-bag-shopping fa-lg"></i>
+            <span>Takeaway Pickup</span>
+          </button>
+          <button type="button" class="order-type-btn" data-type="dinein">
+            <i class="fa-solid fa-utensils fa-lg"></i>
+            <span>Dine-In at Table</span>
+          </button>
+        </div>
+
+        <form id="checkout-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="chk-name">Your Full Name *</label>
+              <input type="text" id="chk-name" class="form-input" placeholder="e.g. Samantha Hayes" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="chk-phone">Contact Phone *</label>
+              <input type="tel" id="chk-phone" class="form-input" placeholder="+1 (555) 123-4567" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="chk-email">Email for Live Tracking & Receipt</label>
+            <input type="email" id="chk-email" class="form-input" placeholder="samantha@example.com">
+          </div>
+
+          <!-- Dynamic Field: Address for Delivery -->
+          <div class="form-group" id="checkout-address-group">
+            <label class="form-label" for="chk-address">Delivery Street Address *</label>
+            <input type="text" id="chk-address" class="form-input" placeholder="Apt / Suite / Street Name, Metro City">
+          </div>
+
+          <!-- Dynamic Field: Table Number for Dine-In -->
+          <div class="form-group" id="checkout-table-group" style="display: none;">
+            <label class="form-label" for="chk-table">Table Number (Look at wooden tent on table)</label>
+            <input type="number" id="chk-table" class="form-input" placeholder="e.g. Table 7" min="1" max="50">
+          </div>
+
+          <!-- Payment Method Selector -->
+          <label class="form-label" style="margin-bottom: 8px;">Select Payment Method:</label>
+          <div class="payment-methods-grid">
+            <label class="payment-method-card">
+              <input type="radio" name="payment-method" value="Credit/Debit Card" checked>
+              <i class="fa-solid fa-credit-card fa-lg" style="color: var(--primary);"></i>
+              <span>Credit Card</span>
+            </label>
+            <label class="payment-method-card">
+              <input type="radio" name="payment-method" value="Apple Pay / UPI">
+              <i class="fa-brands fa-apple fa-lg" style="color: var(--text-main);"></i>
+              <span>Apple / UPI</span>
+            </label>
+            <label class="payment-method-card">
+              <input type="radio" name="payment-method" value="Cash on Delivery / Counter">
+              <i class="fa-solid fa-money-bill-wave fa-lg" style="color: var(--color-veg);"></i>
+              <span>Cash on Order</span>
+            </label>
+          </div>
+
+          <!-- Summary Box inside Checkout -->
+          <div style="background: var(--bg-muted); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 6px;">
+              <span>Subtotal:</span>
+              <strong id="checkout-subtotal">$0.00</strong>
+            </div>
+            <div id="checkout-discount-row" style="display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--color-veg); margin-bottom: 6px;">
+              <span>Discount:</span>
+              <strong id="checkout-discount">-$0.00</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 6px;">
+              <span>Tax (5%):</span>
+              <span id="checkout-tax">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 8px;">
+              <span>Delivery / Packaging:</span>
+              <span id="checkout-delivery">FREE</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 700; border-top: 1px dashed var(--border-subtle); padding-top: 8px;">
+              <span>Payable Total:</span>
+              <strong id="checkout-total" style="color: var(--primary); font-family: var(--font-serif); font-size: 1.3rem;">$0.00</strong>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.05rem;">
+            <i class="fa-solid fa-check-circle"></i> Confirm & Place Order
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       ORDER CONFIRMATION & RECEIPT MODAL
+       ========================================================== -->
+  <div class="modal" id="order-success-modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Order Received!</h3>
+        <button type="button" class="modal-close" id="close-success-modal" aria-label="Close confirmation">&times;</button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="order-confirmation-badge">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h3 style="font-size: 1.6rem; margin-bottom: 6px;">Thank You, <span id="success-order-name">Friend</span>!</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Your order has reached our master barista and kitchen team.
+        </p>
+
+        <!-- Receipt Card -->
+        <div class="receipt-card text-center" style="text-align: left;">
+          <div class="receipt-header-row">
+            <span>Order Reference: <strong id="success-order-id" style="color: var(--primary);">BLISS-0000</strong></span>
+            <span id="success-order-type" style="font-weight: 700; color: var(--accent);">DELIVERY</span>
+          </div>
+          <div id="success-order-items">
+            <!-- Items populated by JS -->
+          </div>
+          <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--border-subtle); padding-top: 8px; margin-top: 8px; font-weight: 700;">
+            <span>Grand Total:</span>
+            <span id="success-order-total" style="color: var(--primary);">$0.00</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
+            Estimated Preparation & Delivery: <strong id="success-order-eta" style="color: var(--text-main);">20 mins</strong>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button type="button" class="btn btn-primary" id="view-live-track-btn">
+            <i class="fa-solid fa-route"></i> Track Live Order
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> Print Receipt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       LIVE ORDER TRACKING MODAL
+       ========================================================== -->
+  <div class="modal" id="tracking-modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Live Order Tracking</h3>
+        <button type="button" class="modal-close" id="close-tracking-modal" aria-label="Close tracking">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle);">
+          <div>
+            <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Tracking Reference:</span>
+            <strong id="track-order-id" style="font-size: 1.15rem; color: var(--primary);">BLISS-ACTIVE</strong>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Estimated Time:</span>
+            <strong id="track-eta-countdown" style="font-size: 1.15rem; color: var(--accent-gold);">18 mins</strong>
+          </div>
+        </div>
+
+        <div style="background: var(--primary-light); padding: 10px 16px; border-radius: var(--radius-md); margin-bottom: 24px; font-size: 0.875rem;">
+          <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
+          Destination: <strong id="track-delivery-address">42 Artisan Boulevard, Metro City</strong>
+        </div>
+
+        <!-- 5-Stage Stepper -->
+        <div class="tracking-stepper-box">
+          <!-- Step 1 -->
+          <div class="tracking-step-row completed" id="track-step-1">
+            <div class="step-marker"><i class="fa-solid fa-check"></i></div>
+            <div class="step-info">
+              <h4>Order Received & Confirmed</h4>
+              <p>Sent directly to the barista espresso bar & chef station.</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="tracking-step-row active" id="track-step-2">
+            <div class="step-marker"><i class="fa-solid fa-fire-burner"></i></div>
+            <div class="step-info">
+              <h4>Kitchen Cooking & Brewing</h4>
+              <p>Single-origin espresso extraction and hot food preparation in progress.</p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="tracking-step-row" id="track-step-3">
+            <div class="step-marker"><i class="fa-solid fa-box-open"></i></div>
+            <div class="step-info">
+              <h4>Fresh Packaging & Quality Seal</h4>
+              <p>Thermal insulated eco-packaging with sanitized security sticker.</p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="tracking-step-row" id="track-step-4">
+            <div class="step-marker"><i class="fa-solid fa-person-biking"></i></div>
+            <div class="step-info">
+              <h4>Out for Delivery / Counter Ready</h4>
+              <p>Rider is speeding hot to your doorstep or waiting at the café counter.</p>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="tracking-step-row" id="track-step-5">
+            <div class="step-marker"><i class="fa-solid fa-face-smile"></i></div>
+            <div class="step-info">
+              <h4>Delivered & Enjoyed!</h4>
+              <p>Enjoy your meal! Let us know how happy your moments were.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       QUICK VIEW FOOD MODAL
+       ========================================================== -->
+  <div class="modal" id="quick-view-modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog modal-dialog-large">
+      <div class="modal-header">
+        <h3 class="modal-title">Delicacy Details</h3>
+        <button type="button" class="modal-close" onclick="document.getElementById('quick-view-modal').classList.remove('active'); document.body.classList.remove('modal-locked');" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" id="quick-view-content">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       TABLE RESERVATION CONFIRMATION VOUCHER MODAL
+       ========================================================== -->
+  <div class="modal" id="res-success-modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Table Booking Confirmed!</h3>
+        <button type="button" class="modal-close" onclick="document.getElementById('res-success-modal').classList.remove('active'); document.body.classList.remove('modal-locked');" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="order-confirmation-badge" style="background: var(--primary-light); color: var(--primary);">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <h3 style="font-size: 1.5rem; margin-bottom: 6px;">We Can't Wait To Welcome You, <span id="res-guest-name">Guest</span>!</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+          Your table is officially reserved. Please show this voucher at the reception upon arrival.
+        </p>
+
+        <div class="receipt-card" style="text-align: left; background: var(--bg-surface); border: 2px dashed var(--primary);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
+            <span>Booking Reference:</span>
+            <strong id="res-ref-id" style="color: var(--primary); font-size: 1.1rem;">RES-12345</strong>
+          </div>
+          <div style="font-size: 0.9rem; margin-bottom: 6px;">
+            <i class="fa-regular fa-clock" style="color: var(--primary); width: 20px;"></i>
+            <span id="res-summary-date">Date & Time</span>
+          </div>
+          <div style="font-size: 0.9rem; margin-bottom: 12px;">
+            <i class="fa-solid fa-users" style="color: var(--primary); width: 20px;"></i>
+            <span id="res-summary-party">2 Guests • Indoor Booth</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px; background: var(--bg-muted); padding: 10px; border-radius: var(--radius-sm);">
+            <i class="fa-solid fa-qrcode fa-3x" style="color: var(--text-main);"></i>
+            <span style="font-size: 0.775rem; color: var(--text-muted);">
+              Scan this fast QR code upon host greeting for instant seating.
+            </span>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('res-success-modal').classList.remove('active'); document.body.classList.remove('modal-locked');">
+          <i class="fa-solid fa-check"></i> Got It, Thanks!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       WISHLIST MODAL
+       ========================================================== -->
+  <div class="modal" id="wishlist-modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-heart" style="color: #e53935;"></i> Your Favorite Bites</h3>
+        <button type="button" class="modal-close" onclick="document.getElementById('wishlist-modal').classList.remove('active'); document.body.classList.remove('modal-locked');" aria-label="Close wishlist">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="wishlist-empty-state" style="text-align: center; padding: 40px; display: none;">
+          <i class="fa-regular fa-heart fa-3x" style="color: var(--text-muted); opacity: 0.5; margin-bottom: 12px;"></i>
+          <h4>No Favorites Saved Yet</h4>
+          <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 20px;">
+            Click the heart icon on any menu item to save your cravings for quick ordering!
+          </p>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('wishlist-modal').classList.remove('active'); document.body.classList.remove('modal-locked'); document.getElementById('menu').scrollIntoView({behavior:'smooth'});">
+            Explore Menu
+          </button>
+        </div>
+
+        <div id="wishlist-items-container" style="display: flex; flex-direction: column; gap: 14px;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       WRITE A REVIEW MODAL
+       ========================================================== -->
+  <div class="modal" id="write-review-modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-star" style="color: var(--color-star);"></i> Review Café Bliss</h3>
+        <button type="button" class="modal-close" onclick="BlissApp.closeWriteReviewModal()" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="submit-review-form">
+          <div class="form-group text-center" style="margin-bottom: 20px;">
+            <label class="form-label" style="display: block; margin-bottom: 8px;">How was your experience?</label>
+            <div class="star-rating-select" style="display: inline-flex; gap: 10px; font-size: 1.8rem; cursor: pointer;">
+              <i class="fa-solid fa-star star-pick active" data-value="1"></i>
+              <i class="fa-solid fa-star star-pick active" data-value="2"></i>
+              <i class="fa-solid fa-star star-pick active" data-value="3"></i>
+              <i class="fa-solid fa-star star-pick active" data-value="4"></i>
+              <i class="fa-solid fa-star star-pick active" data-value="5"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="review-author-name">Your Name *</label>
+            <input type="text" id="review-author-name" class="form-input" placeholder="e.g. Jessica Taylor" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="review-author-role">Title / Description</label>
+            <input type="text" id="review-author-role" class="form-input" placeholder="e.g. Coffee Fanatic / Local Student">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="review-text-input">Your Review & Thoughts *</label>
+            <textarea id="review-text-input" class="form-textarea" placeholder="Tell us about the coffee aroma, food taste, service warmth..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 13px;">
+            <i class="fa-solid fa-paper-plane"></i> Publish My Review
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       AUTHENTICATION MODAL (LOGIN / SIGN UP)
+       ========================================================== -->
+  <div class="modal" id="auth-modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Welcome to Café Bliss</h3>
+        <button type="button" class="modal-close" onclick="BlissApp.closeAuthModal()" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Auth Tabs -->
+        <div style="display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
+          <button type="button" class="btn btn-secondary auth-tab-btn active" data-mode="login" style="flex: 1; padding: 8px;">Sign In</button>
+          <button type="button" class="btn btn-secondary auth-tab-btn" data-mode="signup" style="flex: 1; padding: 8px;">New Account</button>
+        </div>
+
+        <form id="auth-form">
+          <div id="auth-signup-fields" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" for="auth-name">Your Full Name</label>
+              <input type="text" id="auth-name" class="form-input" placeholder="e.g. Liam Parker">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-email">Email Address *</label>
+            <input type="email" id="auth-email" class="form-input" placeholder="liam@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-password">Password</label>
+            <input type="password" id="auth-password" class="form-input" placeholder="••••••••" required value="cafebliss123">
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="auth-submit-btn" style="width: 100%; padding: 13px; margin-top: 10px;">
+            Sign In to Café Bliss
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 16px; font-size: 0.8rem; color: var(--text-muted);">
+          <span>By continuing, you agree to Café Bliss terms and loyalty rewards policy.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       ACCESSIBILITY & DISPLAY CONTROLS MODAL
+       ========================================================== -->
+  <div class="modal" id="a11y-modal" role="dialog" aria-modal="true" aria-labelledby="a11y-title">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="a11y-title"><i class="fa-solid fa-universal-access" style="color: var(--primary);"></i> Accessibility & Controls</h3>
+        <button type="button" class="modal-close" id="close-a11y-modal" aria-label="Close accessibility modal">&times;</button>
+      </div>
+      <div class="modal-body a11y-modal-content">
+        <!-- Font Size Adjuster -->
+        <div class="a11y-control-row">
+          <div class="a11y-control-info">
+            <h4>Font Size Scaling</h4>
+            <p>Adjust text size for comfortable reading</p>
+          </div>
+          <div class="font-size-btn-group" role="group" aria-label="Font size selector">
+            <button type="button" class="a11y-font-btn active" data-size="normal">A</button>
+            <button type="button" class="a11y-font-btn" data-size="large">A+</button>
+            <button type="button" class="a11y-font-btn" data-size="xlarge">A++</button>
+          </div>
+        </div>
+
+        <!-- High Contrast Mode -->
+        <div class="a11y-control-row">
+          <div class="a11y-control-info">
+            <h4>High Contrast Mode</h4>
+            <p>Enhance element borders and contrast ratios</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="a11y-contrast-toggle" aria-label="Toggle high contrast">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- Reduced Motion Mode -->
+        <div class="a11y-control-row">
+          <div class="a11y-control-info">
+            <h4>Reduced Motion</h4>
+            <p>Turn off floating effects & parallax</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="a11y-motion-toggle" aria-label="Toggle reduced motion">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- Audio Chimes -->
+        <div class="a11y-control-row">
+          <div class="a11y-control-info">
+            <h4>Pleasant Sound Chimes</h4>
+            <p>Audio confirmation on add to cart & actions</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="a11y-sound-toggle" checked aria-label="Toggle audio feedback">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       IMAGE LIGHTBOX MODAL
+       ========================================================== -->
+  <div class="modal lightbox-modal" id="lightbox-modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="lightbox-content-wrap">
+        <button type="button" class="lightbox-nav-btn lightbox-prev" id="lightbox-prev-btn" aria-label="Previous photo"><i class="fa-solid fa-chevron-left"></i></button>
+        <button type="button" class="lightbox-nav-btn lightbox-next" id="lightbox-next-btn" aria-label="Next photo"><i class="fa-solid fa-chevron-right"></i></button>
+        <button type="button" class="modal-close" id="lightbox-close-btn" style="position: absolute; top: -45px; right: 0; color: #ffffff;" aria-label="Close lightbox">&times;</button>
+        
+        <img src="" alt="" class="lightbox-img" id="lightbox-img">
+        <div class="lightbox-caption-box">
+          <h3 class="lightbox-title" id="lightbox-title"></h3>
+          <p class="lightbox-sub" id="lightbox-sub"></p>
+          <span style="font-size: 0.775rem; color: var(--accent-gold); display: block; margin-top: 4px;" id="lightbox-counter">1 / 9</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       FLOATING ACTION BUTTONS
+       ========================================================== -->
+  <div class="floating-action-group">
+    <button type="button" class="float-round-btn" id="back-to-top-btn" title="Back to top" aria-label="Scroll back to top">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- ==========================================================
+       JAVASCRIPT MODULES
+       ========================================================== -->
+  <script src="js/data.js"></script>
+  <script src="js/a11y.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
