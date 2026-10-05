@@ -1,7 +1,8 @@
 # ☕ Café Bliss – Fresh Taste, Happy Moments
 
-> 🌐 **Live Website Link:** [https://shabna-002.github.io/cafe-bliss/](https://shabna-002.github.io/cafe-bliss/)  
-> 📁 **GitHub Repository:** [https://github.com/Shabna-002/cafe-bliss](https://github.com/Shabna-002/cafe-bliss)
+> 🌐 **GitHub Pages Live:** [https://shabna-002.github.io/cafe-bliss/](https://shabna-002.github.io/cafe-bliss/)  
+> 📁 **GitHub Repository:** [https://github.com/Shabna-002/cafe-bliss](https://github.com/Shabna-002/cafe-bliss)  
+> 🚀 **Deploy on Render:** [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Shabna-002/cafe-bliss)
 
 A modern, premium, attractive, and fully responsive Cafeteria & Restaurant website crafted with a warm, cozy coffee-and-cream aesthetic, glassmorphism cards, smooth animations, interactive online ordering, live order tracking, table reservations, and dedicated accessibility controls.
 
